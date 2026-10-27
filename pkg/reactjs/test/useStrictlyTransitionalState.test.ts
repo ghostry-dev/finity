@@ -1,6 +1,7 @@
 import { InvalidTransitionError } from '@ghostry/finity-core';
-import { renderHook } from '@testing-library/react';
-import { describe, expect, it, test } from 'vitest';
+import { act, renderHook } from '@testing-library/react';
+import * as React from 'react';
+import { describe, expect, it, test, vi } from 'vitest';
 import { initialize } from '.';
 
 const finity = initialize({});
@@ -137,5 +138,58 @@ describe('transitioning after state already updated', () => {
       const { transition, ...s } = result.current.value();
       expect(s).toEqual({ kind: 'B' });
     });
+  });
+});
+
+describe('re-rendering without a state change', () => {
+  it('does not rerun effects that depend on the state', () => {
+    let runs = 0;
+
+    const { rerender } = renderHook(() => {
+      const state = finity.useStrictlyTransitionalState(
+        State,
+        () => ({ kind: 'Loading' } as const),
+      );
+
+      React.useEffect(() => {
+        runs++;
+      }, [state.value()]);
+    });
+
+    for (let i = 0; i < 9; i++) rerender();
+
+    expect(runs).toBe(1);
+  });
+
+  it('rejects transitions from earlier renders after the first', () => {
+    const onInvalidTransition = vi.fn();
+    const finity = initialize({ onInvalidTransition });
+
+    const { result, rerender } = renderHook(() =>
+      finity.useStrictlyTransitionalState(
+        State,
+        () => ({ kind: 'Loading' } as const),
+      ),
+    );
+
+    const captured = [result.current.value()];
+    for (let i = 0; i < 9; i++) {
+      rerender();
+      captured.push(result.current.value());
+    }
+
+    captured.forEach((s, i) => {
+      if (s.kind !== 'Loading') return;
+      act(() => s.transition({ kind: 'Ready', resource: i + 1 }));
+    });
+
+    const { transition, ...s } = result.current.value();
+    expect(s).toEqual({ kind: 'Ready', resource: 1 });
+
+    expect(onInvalidTransition).toHaveBeenCalledTimes(9);
+    for (const [error] of onInvalidTransition.mock.calls) {
+      expect(error.reason).toBe('stale');
+      expect(error.state.from).toMatchObject({ kind: 'Ready', resource: 1 });
+    }
   });
 });

@@ -8,6 +8,7 @@ import type {
 } from './States.ts';
 import type { Config, Prettify } from './Types.ts';
 import $useEffect from './useEffect.ts';
+import $useRef from './useRef.ts';
 import $useState from './useState.ts';
 import $useStrictlyTransitionalState from './useStrictlyTransitionalState.ts';
 import $useTransitionalState from './useTransitionalState.ts';
@@ -86,7 +87,12 @@ export interface Initialized {
  */
 export const initialize = (config: Config): Initialized => {
   const useState = $useState(config);
-  const useTransitionalState = $useTransitionalState(config, useState);
+  const useRef = $useRef(useState);
+  const useTransitionalState = $useTransitionalState(
+    config,
+    useState,
+    useRef,
+  );
   const useStrictlyTransitionalState = $useStrictlyTransitionalState(
     config,
     useTransitionalState,

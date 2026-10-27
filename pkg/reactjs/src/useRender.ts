@@ -16,10 +16,13 @@ class RenderSwitchInstance<
 > extends ExhaustiveSwitchInstance<React.ReactNode, S> {
   public use = (): React.ReactNode => {
     const s = this.state();
-    const found = React.useMemo(
-      () => this.cases.find(([kinds, _]) => kinds.includes(s.kind)),
-      [s],
-    );
+    /**
+     * The case is found on every render, rather than memoized on the state,
+     * so that the case function of the current render is used. Memoizing it
+     * would keep a previous render's function, along with the stale values
+     * that it closes over.
+     */
+    const found = this.cases.find(([kinds, _]) => kinds.includes(s.kind));
     if (found) {
       const [_, render] = found;
       return render(s);

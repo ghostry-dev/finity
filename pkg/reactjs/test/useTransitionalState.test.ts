@@ -50,6 +50,40 @@ test('transitioning the state', async () => {
   expect(s2).toEqual({ kind: 'Ready', resource: 123 });
 });
 
+describe('the state object', () => {
+  it('is the same between calls', () => {
+    const { result } = renderHook(() =>
+      finity.useTransitionalState(State, () => ({ kind: 'Loading' } as const)),
+    );
+
+    expect(result.current.value()).toBe(result.current.value());
+  });
+
+  it('is the same between renders without a state change', () => {
+    const { result, rerender } = renderHook(() =>
+      finity.useTransitionalState(State, () => ({ kind: 'Loading' } as const)),
+    );
+
+    const s1 = result.current.value();
+
+    rerender();
+
+    expect(result.current.value()).toBe(s1);
+  });
+
+  it('changes when the state changes', () => {
+    const { result } = renderHook(() =>
+      finity.useTransitionalState(State, () => ({ kind: 'Loading' } as const)),
+    );
+
+    const s1 = result.current.value();
+
+    act(() => result.current.set({ kind: 'Ready', resource: 123 }));
+
+    expect(result.current.value()).not.toBe(s1);
+  });
+});
+
 describe('transitioning to a disallowed state', () => {
   it('does not transition', () => {
     const { result, rerender } = renderHook(() =>
@@ -195,6 +229,40 @@ describe('transitioning after state already updated', () => {
 
       const { transition, ...s } = result.current.value();
       expect(s).toEqual({ kind: 'B' });
+    });
+  });
+
+  describe.each([
+    ['set', (state: any) => state.set({ kind: 'B' })],
+    ['update', (state: any) => state.update(() => ({ kind: 'B' }))],
+  ])('using `%s` from a later render', (_, change) => {
+    it('rejects the transition as stale', () => {
+      const onInvalidTransition = vi.fn();
+      const finity = initialize({ onInvalidTransition });
+
+      const { result, rerender } = renderHook(() =>
+        finity.useTransitionalState(State, () => ({ kind: 'A' })),
+      );
+
+      const s1 = result.current.value();
+      expect(s1.kind).toEqual('A');
+      if (s1.kind !== 'A') return;
+
+      rerender();
+
+      act(() => change(result.current));
+      act(() => s1.transition({ kind: 'C' }));
+
+      const { transition, ...s } = result.current.value();
+      expect(s).toEqual({ kind: 'B' });
+
+      expect(onInvalidTransition).toHaveBeenCalledOnce();
+      const [error] = onInvalidTransition.mock.calls[0]!;
+      expect(error.reason).toBe('stale');
+      expect(error.state.from).toMatchObject({ kind: 'B' });
+      expect(error.state.to).toMatchObject({ kind: 'C' });
+      expect(error.tick.current).toBe(1);
+      expect(error.tick.bound).toBe(0);
     });
   });
 });

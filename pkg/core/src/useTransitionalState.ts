@@ -8,6 +8,7 @@ import type {
 } from './States';
 import { type Config, type FundamentalState, type Getter } from './Types';
 import useClock from './useClock';
+import type { UseRefHook } from './useRef';
 import type { UseState, UseStateHook } from './useState';
 import { shallowEqual } from './Utils';
 
@@ -49,6 +50,7 @@ export type UseTransitionalStateHook = <
 export default (
   config: Config,
   useState: UseStateHook,
+  useRef: UseRefHook,
 ): UseTransitionalStateHook => {
   const isEqualState = config.isEqualState ?? shallowEqual;
 
@@ -67,22 +69,37 @@ export default (
     type $Update = $Use['update'];
     type $Value = $Use['value'];
 
-    const state = useState<$State>(initial);
-    const clock = useClock(useState);
+    const clock = useClock(useRef);
 
-    const set: $Set = (...args: Parameters<$Set>): ReturnType<$Set> => {
-      clock.advance();
-      return state.set(...args);
+    /**
+     * The latest state is shared by every render of a component, so that
+     * transitions are checked against it. In React, the value of state is a
+     * snapshot of the render that read it, which may since have been set.
+     */
+    const latest = useRef<$State>(initial);
+
+    const invalidTransition = (
+      reason: Reason,
+      to: FundamentalState,
+      boundTick: number,
+    ): void => {
+      config.onInvalidTransition?.(
+        new InvalidTransitionError({
+          reason,
+          state: {
+            name: State.name,
+            from: latest.current,
+            to,
+          },
+          tick: {
+            current: clock.current(),
+            bound: boundTick,
+          },
+        }),
+      );
     };
 
-    const update: $Update = (
-      ...args: Parameters<$Update>
-    ): ReturnType<$Update> => {
-      clock.advance();
-      return state.update(...args);
-    };
-
-    const value: $Value = () => {
+    const bind = (s: $State): ReturnType<$Value> => {
       /**
        * When the transition function is created, it should be bound
        * to a particular tick of the clock, so that the transition
@@ -90,37 +107,17 @@ export default (
        */
       const boundTick = clock.current();
 
-      const invalidTransition = (
-        reason: Reason,
-        to: FundamentalState,
-      ): void => {
-        config.onInvalidTransition?.(
-          new InvalidTransitionError({
-            reason,
-            state: {
-              name: State.name,
-              from: state.value(),
-              to,
-            },
-            tick: {
-              current: clock.current(),
-              bound: boundTick,
-            },
-          }),
-        );
-      };
-
       return {
-        ...state.value(),
+        ...s,
         transition: (to: Exclude<$State, Function>): void => {
           if (clock.current() !== boundTick) {
-            return invalidTransition('stale', to);
+            return invalidTransition('stale', to, boundTick);
           }
 
-          const current = state.value();
+          const current = latest.current;
 
           if (!State.transitions[current.kind].includes(to.kind)) {
-            return invalidTransition('disallowed', to);
+            return invalidTransition('disallowed', to, boundTick);
           }
 
           /**
@@ -138,6 +135,27 @@ export default (
           set(to);
         },
       } as unknown as ReturnType<$Value>;
+    };
+
+    /**
+     * The state is kept bound to the clock, rather than being bound whenever
+     * `value` is called, so that its identity only changes when it is set.
+     */
+    const state = useState<ReturnType<$Value>>(() => bind(latest.current));
+
+    const set: $Set = (value: $State): $State => {
+      clock.advance();
+      latest.current = value;
+      state.set(bind(value));
+      return value;
+    };
+
+    const update: $Update = (fn: (prev: $State) => $State): $State => {
+      return set(fn(latest.current));
+    };
+
+    const value: $Value = () => {
+      return state.value();
     };
 
     return { set, update, value };

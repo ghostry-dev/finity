@@ -30,3 +30,26 @@ test('rendering based on the state', async () => {
 
   expect(fragment.current).toBe('Loading');
 });
+
+test('rendering with the case function of the latest render', async () => {
+  const { result, rerender } = renderHook(
+    ({ n }: { n: number }) => {
+      const state = finity.useTransitionalState(
+        State,
+        () => ({ kind: 'Loading' } as const),
+      );
+
+      return finity
+        .useRender(state.value)
+        .case(['Loading', 'Ready', 'Errored'], (s) => `${s.kind}:${n}`)
+        .use();
+    },
+    { initialProps: { n: 1 } },
+  );
+
+  expect(result.current).toBe('Loading:1');
+
+  rerender({ n: 2 });
+
+  expect(result.current).toBe('Loading:2');
+});

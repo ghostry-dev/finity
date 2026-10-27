@@ -41,3 +41,32 @@ test('transitioning the state', async () => {
 
   expect(s).toEqual({ kind: 'Ready', resource: 123 });
 });
+
+test('running the effect only when the state changes', async () => {
+  const runs: string[] = [];
+
+  const { rerender } = renderHook(() => {
+    const state = finity.useStrictlyTransitionalState(
+      State,
+      () => ({ kind: 'Loading' } as const),
+    );
+
+    finity
+      .useEffect(state.value)
+      .case(['Loading'], ({ kind, transition }) => {
+        runs.push(kind);
+        transition({ kind: 'Ready', resource: 123 });
+      })
+      .case(['Ready', 'Errored'], ({ kind }) => {
+        runs.push(kind);
+      })
+      .use();
+  });
+
+  expect(runs).toEqual(['Loading', 'Ready']);
+
+  rerender();
+  rerender();
+
+  expect(runs).toEqual(['Loading', 'Ready']);
+});

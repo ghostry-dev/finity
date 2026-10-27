@@ -299,4 +299,16 @@ However, if you are using SolidJS or some other framework where the `JSX.Element
 
 If that applies to your application, then you will need to use `useRender` or some other approach for ensuring case exhaustivity.
 
+> [!NOTE]
+> In SolidJS, a case's function is called once when its case starts to match, like a component, rather than every time the state changes. The state it receives updates in place while the case still matches (e.g. a transition from `Viewing` to `Deleting` in `.case(['Viewing', 'Deleting'], ...)`), so read its properties in JSX or another reactive scope. Like Solid props, destructuring the state captures its values once.
+>
+> Without JSX, a case can return a function, which is rendered reactively:
+>
+> ```ts
+> useRender(state.value)
+>   .case(['Loading'], () => 'Loading…')
+>   .case(['Viewing', 'Deleting'], (s) => () => `${s.kind}: ${s.data}`)
+>   .use();
+> ```
+
 Note: the `useRender` function is not available in the `@ghostry/finity-core` package because it's implementation is entirely subject to a frontend framework.

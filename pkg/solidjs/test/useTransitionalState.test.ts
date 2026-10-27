@@ -58,6 +58,28 @@ test('transitioning the state', async () => {
   ]);
 });
 
+describe('the state object', () => {
+  it('is the same between calls', () => {
+    const { result: state } = renderHook(finity.useTransitionalState, {
+      initialProps: [State, () => ({ kind: 'Loading' } as const)],
+    });
+
+    expect(state.value()).toBe(state.value());
+  });
+
+  it('changes when the state changes', () => {
+    const { result: state } = renderHook(finity.useTransitionalState, {
+      initialProps: [State, () => ({ kind: 'Loading' } as const)],
+    });
+
+    const s1 = state.value();
+
+    state.set({ kind: 'Ready', resource: 123 });
+
+    expect(state.value()).not.toBe(s1);
+  });
+});
+
 describe('transitioning to a disallowed state', () => {
   it('does not transition', async () => {
     const { result: state } = renderHook(finity.useTransitionalState, {

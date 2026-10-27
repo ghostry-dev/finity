@@ -44,7 +44,9 @@
     "prepack": "cp ../../README.md ./",
     "postpack": "rm -f ./README.md",
     "outdated": "bun outdated",
-    "test": "vitest run"
+    "test:types": "tsc -p ./test",
+    "test:run": "vitest run",
+    "test": "bun run test:types && bun run test:run"
   },
   "files": [
     "dist"
