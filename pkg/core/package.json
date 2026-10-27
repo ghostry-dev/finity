@@ -17,11 +17,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pjrebsch/finity",
+    "url": "git+https://github.com/ghostry-dev/finity",
     "directory": "pkg/core"
   },
-  "homepage": "https://github.com/pjrebsch/finity",
-  "bugs": "https://github.com/pjrebsch/finity/issues",
+  "homepage": "https://github.com/ghostry-dev/finity",
+  "bugs": "https://github.com/ghostry-dev/finity/issues",
   "type": "module",
   "types": "./dist/types/index.d.ts",
   "module": "./dist/esm/index.js",
