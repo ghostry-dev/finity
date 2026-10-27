@@ -14,11 +14,11 @@
     },
     "pkg/core": {
       "name": "@ghostry/finity-core",
-      "version": "0.0.10",
+      "version": "0.0.11",
     },
     "pkg/reactjs": {
       "name": "@ghostry/finity-reactjs",
-      "version": "0.0.10",
+      "version": "0.0.11",
       "dependencies": {
         "@ghostry/finity-core": "workspace:*",
       },
@@ -41,7 +41,7 @@
     },
     "pkg/solidjs": {
       "name": "@ghostry/finity-solidjs",
-      "version": "0.0.10",
+      "version": "0.0.11",
       "dependencies": {
         "@ghostry/finity-core": "workspace:*",
       },

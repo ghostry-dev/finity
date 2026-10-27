@@ -1,6 +1,6 @@
 {
   "name": "@ghostry/finity-solidjs",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "license": "MIT",
   "description": "Finite state management with exhaustiveness and transition enforcement for TypeScript.",
   "keywords": [
