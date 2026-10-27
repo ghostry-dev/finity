@@ -9,6 +9,16 @@ import type {
 import { type Config, type FundamentalState, type Getter } from './Types';
 import useClock from './useClock';
 import type { UseState, UseStateHook } from './useState';
+import { shallowEqual } from './Utils';
+
+/**
+ * At runtime, a state may carry a `transition` property (e.g. when spread
+ * from a transitional state), which should not affect state equality.
+ */
+const withoutTransition = ({
+  transition: _,
+  ...state
+}: FundamentalState & { transition?: unknown }): FundamentalState => state;
 
 /**
  * Returns the transitional state type from a defined transitional state.
@@ -40,6 +50,8 @@ export default (
   config: Config,
   useState: UseStateHook,
 ): UseTransitionalStateHook => {
+  const isEqualState = config.isEqualState ?? shallowEqual;
+
   return <
     K extends string,
     S extends StateDefinition<K>,
@@ -105,11 +117,22 @@ export default (
             return invalidTransition('stale', to);
           }
 
-          const currentKind = state.value().kind;
-          const futureKind = to.kind;
+          const current = state.value();
 
-          if (!State.transitions[currentKind].includes(futureKind)) {
+          if (!State.transitions[current.kind].includes(to.kind)) {
             return invalidTransition('disallowed', to);
+          }
+
+          /**
+           * Transitioning to an equal state is skipped, so that effects do
+           * not rerun. The clock isn't advanced either, which leaves this
+           * transition function valid since the state hasn't changed.
+           */
+          if (
+            current.kind === to.kind &&
+            isEqualState(withoutTransition(current), withoutTransition(to))
+          ) {
+            return;
           }
 
           set(to);

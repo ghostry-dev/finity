@@ -1,7 +1,7 @@
 import { InvalidTransitionError } from '@ghostry/finity-core';
 import { renderHook } from '@solidjs/testing-library';
-import { createSignal } from 'solid-js';
-import { describe, expect, it, test } from 'vitest';
+import { createComputed, createRoot, createSignal } from 'solid-js';
+import { describe, expect, it, test, vi } from 'vitest';
 import { initialize, testEffectInStages } from '.';
 
 const finity = initialize({});
@@ -231,6 +231,112 @@ describe('transitioning after state already updated', () => {
           done();
         },
       ]);
+    });
+  });
+});
+
+describe('transitioning to an equal state', () => {
+  const State = finity
+    .defineTransitionalState<{
+      A: { n: number };
+      B: {};
+    }>('ab')
+    .transitions({
+      A: ['A', 'B'],
+      B: [],
+    });
+
+  const renderCountedHook = (finity: ReturnType<typeof initialize>) => {
+    const { result: state } = renderHook(finity.useTransitionalState, {
+      initialProps: [State, () => ({ kind: 'A', n: 1 } as const)],
+    });
+
+    let updates = 0;
+
+    createRoot(() =>
+      createComputed(() => {
+        state.value();
+        updates++;
+      }),
+    );
+
+    return { state, updates: () => updates };
+  };
+
+  it('does not update the state', () => {
+    const { state, updates } = renderCountedHook(finity);
+
+    const s1 = state.value();
+    expect(s1.kind).toEqual('A');
+    if (s1.kind !== 'A') return;
+
+    s1.transition({ kind: 'A', n: 1 });
+
+    expect(updates()).toBe(1);
+  });
+
+  it('ignores the `transition` property', () => {
+    const { state, updates } = renderCountedHook(finity);
+
+    const s1 = state.value();
+    expect(s1.kind).toEqual('A');
+    if (s1.kind !== 'A') return;
+
+    s1.transition({ ...s1 });
+
+    expect(updates()).toBe(1);
+  });
+
+  it('keeps the transition function valid', () => {
+    const onInvalidTransition = vi.fn();
+    const { state } = renderCountedHook(initialize({ onInvalidTransition }));
+
+    const s1 = state.value();
+    expect(s1.kind).toEqual('A');
+    if (s1.kind !== 'A') return;
+
+    s1.transition({ kind: 'A', n: 1 });
+    s1.transition({ kind: 'B' });
+
+    const { transition, ...s } = state.value();
+    expect(s).toEqual({ kind: 'B' });
+    expect(onInvalidTransition).not.toHaveBeenCalled();
+  });
+
+  it('updates the state when it differs', () => {
+    const { state, updates } = renderCountedHook(finity);
+
+    const s1 = state.value();
+    expect(s1.kind).toEqual('A');
+    if (s1.kind !== 'A') return;
+
+    s1.transition({ kind: 'A', n: 2 });
+
+    expect(updates()).toBe(2);
+
+    const { transition, ...s } = state.value();
+    expect(s).toEqual({ kind: 'A', n: 2 });
+  });
+
+  describe('with `isEqualState` configured', () => {
+    it('compares the states without the `transition` property', () => {
+      const isEqualState = vi.fn((_a: object, _b: object) => false);
+      const { state, updates } = renderCountedHook(
+        initialize({ isEqualState }),
+      );
+
+      const s1 = state.value();
+      expect(s1.kind).toEqual('A');
+      if (s1.kind !== 'A') return;
+
+      s1.transition({ ...s1 });
+
+      expect(updates()).toBe(2);
+      expect(isEqualState).toHaveBeenCalledTimes(1);
+      expect(isEqualState).toHaveBeenCalledWith(
+        { kind: 'A', n: 1 },
+        { kind: 'A', n: 1 },
+      );
     });
   });
 });

@@ -256,6 +256,33 @@ finity.useEffect(state.value).case(['A'], ({ transition }) => {
 
 _If a stale transition is made to a disallowed state, the `reason` will be `"stale"`, not `"disallowed"`._
 
+### `isEqualState`
+
+A state that is allowed to transition to its own `kind` (e.g. `Ready: ['Ready']`) may be transitioned to a state that is equal to the current one. Such a transition is skipped so that effects and renders depending on the state do not rerun.
+
+This config determines whether the two states are equal. It is only called when both states have the same `kind`, and the `transition` property is omitted from both states before they are compared.
+
+By default, states are compared with `shallowEqual` (exported from `@ghostry/finity-core`): they are equal if they have the same properties and each value is the same according to `Object.is`.
+
+```ts
+import { equals } from 'ramda';
+
+const finity = initialize({
+  isEqualState: equals,
+});
+```
+
+> [!NOTE]
+> A skipped transition is still a valid transition—it will _not_ call `onInvalidTransition`. Since the state did not change, the transition function also remains valid to call again.
+
+To always transition, even when the states are equal:
+
+```ts
+const finity = initialize({
+  isEqualState: () => false,
+});
+```
+
 ## FAQ
 
 ### Should I use `useStrictlyTransitionalState` or `useTransitionalState`?

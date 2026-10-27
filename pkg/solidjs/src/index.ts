@@ -33,7 +33,7 @@ export interface Initialized extends Core.Initialized {
  */
 export const initialize = (config: Config): Initialized => {
   const api = Core.initialize({
-    onInvalidTransition: config.onInvalidTransition,
+    ...config,
     useState: <T extends {}>(initial: () => T) => createSignal(initial()),
   });
 

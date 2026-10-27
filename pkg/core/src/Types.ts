@@ -55,6 +55,18 @@ export interface Config {
    * A function to be invoked in the event of an invalid state transition.
    */
   onInvalidTransition?: (error: InvalidTransitionError) => void;
+
+  /**
+   * Determines whether the state being transitioned to is equal to the
+   * current state, in which case the transition is skipped: the state is not
+   * updated, so dependent effects and renders do not rerun.
+   *
+   * Only called when both states have the same `kind`. The `transition`
+   * property is omitted from both states before they are compared.
+   *
+   * Defaults to `shallowEqual`.
+   */
+  isEqualState?: (a: FundamentalState, b: FundamentalState) => boolean;
 }
 
 /**

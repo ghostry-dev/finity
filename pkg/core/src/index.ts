@@ -12,7 +12,7 @@ import $useState from './useState.ts';
 import $useStrictlyTransitionalState from './useStrictlyTransitionalState.ts';
 import $useTransitionalState from './useTransitionalState.ts';
 
-export { never, noop } from './Utils.ts';
+export { never, noop, shallowEqual } from './Utils.ts';
 
 export type { Config, Getter, Setter } from './Types.ts';
 

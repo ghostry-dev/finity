@@ -1,6 +1,6 @@
 import { InvalidTransitionError } from '@ghostry/finity-core';
-import { renderHook } from '@testing-library/react';
-import { describe, expect, it, test } from 'vitest';
+import { act, renderHook } from '@testing-library/react';
+import { describe, expect, it, test, vi } from 'vitest';
 import { initialize } from '.';
 
 const finity = initialize({});
@@ -195,6 +195,106 @@ describe('transitioning after state already updated', () => {
 
       const { transition, ...s } = result.current.value();
       expect(s).toEqual({ kind: 'B' });
+    });
+  });
+});
+
+describe('transitioning to an equal state', () => {
+  const State = finity
+    .defineTransitionalState<{
+      A: { n: number };
+      B: {};
+    }>('ab')
+    .transitions({
+      A: ['A', 'B'],
+      B: [],
+    });
+
+  const renderCountedHook = (finity: ReturnType<typeof initialize>) => {
+    let renders = 0;
+
+    const { result } = renderHook(() => {
+      renders++;
+      return finity.useTransitionalState(State, () => ({ kind: 'A', n: 1 }));
+    });
+
+    return { result, renders: () => renders };
+  };
+
+  it('does not update the state', () => {
+    const { result, renders } = renderCountedHook(finity);
+
+    const s1 = result.current.value();
+    expect(s1.kind).toEqual('A');
+    if (s1.kind !== 'A') return;
+
+    act(() => s1.transition({ kind: 'A', n: 1 }));
+
+    expect(renders()).toBe(1);
+  });
+
+  it('ignores the `transition` property', () => {
+    const { result, renders } = renderCountedHook(finity);
+
+    const s1 = result.current.value();
+    expect(s1.kind).toEqual('A');
+    if (s1.kind !== 'A') return;
+
+    act(() => s1.transition({ ...s1 }));
+
+    expect(renders()).toBe(1);
+  });
+
+  it('keeps the transition function valid', () => {
+    const onInvalidTransition = vi.fn();
+    const { result } = renderCountedHook(initialize({ onInvalidTransition }));
+
+    const s1 = result.current.value();
+    expect(s1.kind).toEqual('A');
+    if (s1.kind !== 'A') return;
+
+    act(() => s1.transition({ kind: 'A', n: 1 }));
+    act(() => s1.transition({ kind: 'B' }));
+
+    const { transition, ...s } = result.current.value();
+    expect(s).toEqual({ kind: 'B' });
+    expect(onInvalidTransition).not.toHaveBeenCalled();
+  });
+
+  it('updates the state when it differs', () => {
+    const { result, renders } = renderCountedHook(finity);
+
+    const s1 = result.current.value();
+    expect(s1.kind).toEqual('A');
+    if (s1.kind !== 'A') return;
+
+    act(() => s1.transition({ kind: 'A', n: 2 }));
+
+    expect(renders()).toBe(2);
+
+    const { transition, ...s } = result.current.value();
+    expect(s).toEqual({ kind: 'A', n: 2 });
+  });
+
+  describe('with `isEqualState` configured', () => {
+    it('compares the states without the `transition` property', () => {
+      const isEqualState = vi.fn((_a: object, _b: object) => false);
+      const { result, renders } = renderCountedHook(
+        initialize({ isEqualState }),
+      );
+
+      const s1 = result.current.value();
+      expect(s1.kind).toEqual('A');
+      if (s1.kind !== 'A') return;
+
+      act(() => s1.transition({ ...s1 }));
+
+      expect(renders()).toBe(2);
+      expect(isEqualState).toHaveBeenCalledTimes(1);
+      expect(isEqualState).toHaveBeenCalledWith(
+        { kind: 'A', n: 1 },
+        { kind: 'A', n: 1 },
+      );
     });
   });
 });
