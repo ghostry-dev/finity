@@ -1,6 +1,6 @@
 import { renderHook } from '@solidjs/testing-library';
 import { describe, expect, test } from 'vitest';
-import { initialize, testEffectInStages } from '.';
+import { initialize, testEffectInStages } from './index.ts';
 
 const finity = initialize({});
 

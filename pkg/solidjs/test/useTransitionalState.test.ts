@@ -2,7 +2,7 @@ import { InvalidTransitionError } from '@ghostry/finity-core';
 import { renderHook } from '@solidjs/testing-library';
 import { createComputed, createRoot, createSignal } from 'solid-js';
 import { describe, expect, it, test, vi } from 'vitest';
-import { initialize, testEffectInStages } from '.';
+import { initialize, testEffectInStages } from './index.ts';
 
 const finity = initialize({});
 

@@ -1,16 +1,16 @@
-import type { DefinedTransitionalState } from './defineTransitionalState';
-import { InvalidTransitionError, type Reason } from './InvalidTransitionError';
+import type { DefinedTransitionalState } from './defineTransitionalState.ts';
+import { InvalidTransitionError, type Reason } from './InvalidTransitionError.ts';
 import type {
   FiniteStateUnion,
   StateDefinition,
   TransitionalStateUnion,
   TransitionsDefinition,
-} from './States';
-import { type Config, type FundamentalState, type Getter } from './Types';
-import useClock from './useClock';
-import type { UseRefHook } from './useRef';
-import type { UseState, UseStateHook } from './useState';
-import { shallowEqual } from './Utils';
+} from './States.ts';
+import { type Config, type FundamentalState, type Getter } from './Types.ts';
+import useClock from './useClock.ts';
+import type { UseRefHook } from './useRef.ts';
+import type { UseState, UseStateHook } from './useState.ts';
+import { shallowEqual } from './Utils.ts';
 
 /**
  * At runtime, a state may carry a `transition` property (e.g. when spread

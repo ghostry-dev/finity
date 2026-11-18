@@ -1,4 +1,4 @@
-import type { FundamentalState } from './Types';
+import type { FundamentalState } from './Types.ts';
 
 interface StateInfo {
   name: string | undefined;

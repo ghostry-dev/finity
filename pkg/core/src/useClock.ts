@@ -1,4 +1,4 @@
-import type { UseRefHook } from './useRef';
+import type { UseRefHook } from './useRef.ts';
 
 interface UseClock {
   current: () => number;

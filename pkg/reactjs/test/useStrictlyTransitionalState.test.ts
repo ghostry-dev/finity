@@ -2,7 +2,7 @@ import { InvalidTransitionError } from '@ghostry/finity-core';
 import { act, renderHook } from '@testing-library/react';
 import * as React from 'react';
 import { describe, expect, it, test, vi } from 'vitest';
-import { initialize } from '.';
+import { initialize } from './index.ts';
 
 const finity = initialize({});
 

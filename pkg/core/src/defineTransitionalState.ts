@@ -1,4 +1,4 @@
-import type { StateDefinition, TransitionsDefinition } from './States';
+import type { StateDefinition, TransitionsDefinition } from './States.ts';
 
 export interface DefinedTransitionalState<
   K extends string,

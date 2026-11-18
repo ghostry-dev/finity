@@ -1,8 +1,8 @@
 import {
   ExhaustiveSwitchInstance,
   type ExhaustiveSwitch,
-} from './ExhaustiveSwitch';
-import type { Config, Getter } from './Types';
+} from './ExhaustiveSwitch.ts';
+import type { Config, Getter } from './Types.ts';
 
 export type EffectSwitch<
   S extends { kind: string },

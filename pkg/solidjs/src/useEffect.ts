@@ -4,7 +4,7 @@ import {
   type Getter,
 } from '@ghostry/finity-core';
 import { createEffect } from 'solid-js';
-import type { Config } from './Types';
+import type { Config } from './Types.ts';
 
 type EffectSwitch<
   S extends { kind: string },

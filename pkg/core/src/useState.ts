@@ -1,4 +1,4 @@
-import type { Config, InitialValue } from './Types';
+import type { Config, InitialValue } from './Types.ts';
 
 export interface UseState<T extends {}> {
   value(): T;

@@ -4,8 +4,8 @@ import {
   type Getter,
 } from '@ghostry/finity-core';
 import { type JSX } from 'solid-js';
-import { Render, type CaseElement } from './Render';
-import type { Config } from './Types';
+import { Render, type CaseElement } from './Render.tsx';
+import type { Config } from './Types.ts';
 
 type RenderSwitch<
   S extends { kind: string },

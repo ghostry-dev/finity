@@ -1,4 +1,4 @@
-import type { InvalidTransitionError } from './InvalidTransitionError';
+import type { InvalidTransitionError } from './InvalidTransitionError.ts';
 
 /**
  * Represents the common structure of state types for this library.

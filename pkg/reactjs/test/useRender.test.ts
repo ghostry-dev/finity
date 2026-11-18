@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react';
 import { expect, test } from 'vitest';
-import { initialize } from '.';
+import { initialize } from './index.ts';
 
 const finity = initialize({});
 

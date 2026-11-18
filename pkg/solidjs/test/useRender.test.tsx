@@ -5,7 +5,7 @@ import type {
 import { render, renderHook } from '@solidjs/testing-library';
 import { onMount } from 'solid-js';
 import { describe, expect, it, test, vi } from 'vitest';
-import { initialize } from '.';
+import { initialize } from './index.ts';
 
 const finity = initialize({});
 

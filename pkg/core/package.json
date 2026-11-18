@@ -39,8 +39,9 @@
   "scripts": {
     "build:reset": "rm -rf ./dist",
     "build:compile": "bun --bun rslib build --config ../../rslib.shared.config.ts",
+    "build:verify": "tsc --noEmit -p ./tsconfig.verify.json",
     "build:clean": "find ./dist -type f -name '*.tsbuildinfo' -delete",
-    "build": "bun run build:reset && bun run build:compile && bun run build:clean",
+    "build": "bun run build:reset && bun run build:compile && bun run build:verify && bun run build:clean",
     "prepack": "cp ../../README.md ./",
     "postpack": "rm -f ./README.md",
     "outdated": "bun outdated"

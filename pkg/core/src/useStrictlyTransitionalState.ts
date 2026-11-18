@@ -1,14 +1,14 @@
-import type { DefinedTransitionalState } from './defineTransitionalState';
+import type { DefinedTransitionalState } from './defineTransitionalState.ts';
 import type {
   FiniteStateUnion,
   StateDefinition,
   TransitionsDefinition,
-} from './States';
-import type { Config, Getter } from './Types';
+} from './States.ts';
+import type { Config, Getter } from './Types.ts';
 import {
   default as _useTransitionalState,
   type UseTransitionalState,
-} from './useTransitionalState';
+} from './useTransitionalState.ts';
 
 /**
  * Returns the strictly-transitional state type from a defined

@@ -3,7 +3,7 @@ import type {
   Getter,
   IsUnique,
   UnhandledStates,
-} from './Types';
+} from './Types.ts';
 
 /**
  * The implementation type for exhaustive state switching.

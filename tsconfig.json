@@ -2,11 +2,11 @@
   "compilerOptions": {
     "lib": ["ESNext", "DOM"],
     "target": "ES6",
-    "module": "ESNext",
+    "module": "NodeNext",
     "moduleDetection": "force",
     "allowJs": false,
 
-    "moduleResolution": "bundler",
+    "moduleResolution": "NodeNext",
     "verbatimModuleSyntax": true,
     "allowImportingTsExtensions": true,
     "noEmit": true,
