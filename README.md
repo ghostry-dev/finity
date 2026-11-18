@@ -293,11 +293,25 @@ The `useTransitionalState` hook exposes the `transition` function on each state,
 
 ### Do I need `useRender`?
 
-The `useRender` function can be replaced with a native `switch` statement for the majority of users.
+A native `switch` statement only guarantees exhaustiveness when falling through it is a type error. An unhandled state falls through to the end of the function and implicitly returns `undefined`, so TypeScript reports it only if the function's return type excludes `undefined`.
 
-However, if you are using SolidJS or some other framework where the `JSX.Element` type includes `undefined`, then a `switch` statement will not guarantee exhaustiveness, as any unhandled state will result in implicitly returning `undefined`, which TypeScript will accept as a valid render value.
+In ReactJS, declare the component's return type as `React.JSX.Element`. An inferred return type, or `React.ReactNode`, includes `undefined`, and a missing case compiles:
 
-If that applies to your application, then you will need to use `useRender` or some other approach for ensuring case exhaustivity.
+```tsx
+function View(): React.JSX.Element {
+  const current = state.value();
+  switch (current.kind) {
+    case 'Loading':
+      return <Loading />;
+    case 'Ready':
+      return <Resource resource={current.resource} />;
+    case 'Errored':
+      return <Retry />;
+  }
+}
+```
+
+In SolidJS, or any other framework where the `JSX.Element` type includes `undefined`, no return type can make a `switch` exhaustive. Use `useRender`, or end the `switch` with `default: return never(current)`, using `never` from `@ghostry/finity-core`.
 
 > [!NOTE]
 > In SolidJS, a case's function is called once when its case starts to match, like a component, rather than every time the state changes. The state it receives updates in place while the case still matches (e.g. a transition from `Viewing` to `Deleting` in `.case(['Viewing', 'Deleting'], ...)`), so read its properties in JSX or another reactive scope. Like Solid props, destructuring the state captures its values once.
