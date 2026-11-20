@@ -2,7 +2,7 @@
   "name": "@ghostry/finity-reactjs",
   "version": "0.0.12",
   "license": "MIT",
-  "description": "Finite state management with exhaustiveness and transition enforcement for TypeScript.",
+  "description": "Finite state with exhaustive cases and enforced transitions, for React.",
   "keywords": [
     "finite state",
     "state management",
@@ -20,9 +20,13 @@
     "url": "git+https://github.com/ghostry-dev/finity",
     "directory": "pkg/reactjs"
   },
-  "homepage": "https://github.com/ghostry-dev/finity",
+  "homepage": "https://docs.ghostry.dev/finity",
   "bugs": "https://github.com/ghostry-dev/finity/issues",
   "type": "module",
+  "sideEffects": false,
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "types": "./dist/types/index.d.ts",
   "module": "./dist/esm/index.js",
   "exports": {
@@ -42,8 +46,6 @@
     "build:verify": "tsc --noEmit -p ./tsconfig.verify.json",
     "build:clean": "find ./dist -type f -name '*.tsbuildinfo' -delete",
     "build": "bun run build:reset && bun run build:compile && bun run build:verify && bun run build:clean",
-    "prepack": "cp ../../README.md ./",
-    "postpack": "rm -f ./README.md",
     "outdated": "bun outdated",
     "test:types": "bun --bun tsc -p ./test",
     "test:run": "bun --bun vitest run",

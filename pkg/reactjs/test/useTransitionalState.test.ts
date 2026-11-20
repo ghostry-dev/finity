@@ -1,4 +1,4 @@
-import { InvalidTransitionError } from '@ghostry/finity-core';
+import { FinityError } from '@ghostry/finity-core';
 import { act, renderHook } from '@testing-library/react';
 import { describe, expect, it, test, vi } from 'vitest';
 import { initialize } from './index.ts';
@@ -110,7 +110,7 @@ describe('transitioning to a disallowed state', () => {
 
   describe('with `onInvalidTransition` configured', () => {
     it('receives the transition context', () => {
-      let $error: InvalidTransitionError | undefined;
+      let $error: FinityError.InvalidTransitionError | undefined;
 
       const finity = initialize({
         onInvalidTransition: (error) => {
@@ -137,7 +137,13 @@ describe('transitioning to a disallowed state', () => {
         { kind: 'A' },
       );
 
-      expect($error).toBeInstanceOf(InvalidTransitionError);
+      expect($error).toBeInstanceOf(FinityError.InvalidTransitionError);
+
+      expect($error?.name).toBe(
+
+        '@ghostry/finity-core:InvalidTransitionError',
+
+      );
       expect($error?.reason).toBe('disallowed');
       expect($error?.state.name).toStrictEqual('ab');
       expect($error?.state.from).toMatchObject({ kind: 'B' });

@@ -199,10 +199,6 @@ jobs:
       - name: Install Dependencies
         run: bun install --frozen-lockfile
 
-      - name: Pre-publish
-        working-directory: pkg/${{ matrix.pkg }}
-        run: bun run prepack
-
       - name: Publish `pkg/${{ matrix.pkg }}`
         working-directory: pkg/${{ matrix.pkg }}
         run: bunx --no-install jsr publish --allow-dirty

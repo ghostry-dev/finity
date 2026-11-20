@@ -17,7 +17,7 @@ export { never, noop, shallowEqual } from './Utils.ts';
 
 export type { Config, Getter, Setter } from './Types.ts';
 
-export { InvalidTransitionError } from './InvalidTransitionError.ts';
+export { FinityError, InvalidTransitionError } from './Error.ts';
 
 export {
   ExhaustiveSwitchInstance,

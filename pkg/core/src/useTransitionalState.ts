@@ -1,5 +1,5 @@
 import type { DefinedTransitionalState } from './defineTransitionalState.ts';
-import { InvalidTransitionError, type Reason } from './InvalidTransitionError.ts';
+import { FinityError, type Reason } from './Error.ts';
 import type {
   FiniteStateUnion,
   StateDefinition,
@@ -84,7 +84,7 @@ export default (
       boundTick: number,
     ): void => {
       config.onInvalidTransition?.(
-        new InvalidTransitionError({
+        new FinityError.InvalidTransitionError({
           reason,
           state: {
             name: State.name,

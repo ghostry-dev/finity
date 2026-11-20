@@ -1,5 +1,6 @@
 {
   "name": "@ghostry/finity-core",
   "version": "0.0.12",
-  "exports": "./src/index.ts"
+  "exports": "./src/index.ts",
+  "publish": { "include": ["src", "README.md", "LICENSE", "jsr.json"] }
 }

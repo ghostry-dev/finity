@@ -1,4 +1,4 @@
-import type { InvalidTransitionError } from './InvalidTransitionError.ts';
+import type { FinityError } from './Error.ts';
 
 /**
  * Represents the common structure of state types for this library.
@@ -54,7 +54,7 @@ export interface Config {
   /**
    * A function to be invoked in the event of an invalid state transition.
    */
-  onInvalidTransition?: (error: InvalidTransitionError) => void;
+  onInvalidTransition?: (error: FinityError.InvalidTransitionError) => void;
 
   /**
    * Determines whether the state being transitioned to is equal to the

@@ -8,6 +8,7 @@ export type {
   Config,
   ExhaustiveSwitch,
   ExhaustiveSwitchInstance,
+  FinityError,
   Getter,
   InvalidTransitionError,
   Setter,

@@ -1,328 +1,122 @@
+<div align="center">
+
+<picture><img src="https://docs.ghostry.dev/logo.png" alt="ghostry" width="96" height="96"></picture>
+
 # finity
 
-Finite state management with exhaustiveness and transition enforcement for TypeScript.
+**Finite state with exhaustive cases and enforced transitions.**
 
-[![jsr.io score](https://jsr.io/badges/@ghostry/finity-core/score)](https://jsr.io/@ghostry/finity-core/score)
-[![tree shaking](https://flat.badgen.net/bundlephobia/tree-shaking/@ghostry/finity-core?color=blue)](https://bundlephobia.com/package/@ghostry/finity-core)
-[![dependency count](https://flat.badgen.net/bundlephobia/dependency-count/@ghostry/finity-core?color=blue)](https://bundlephobia.com/package/@ghostry/finity-core)
+Declare a component's states and which state may follow which. TypeScript then rejects a missing case and a transition you didn't declare, and finity reports a stale one at runtime.
 
-| Framework | Package                                                                            |                                                                                                                                                 |
-| --------- | ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| ReactJS   | [`@ghostry/finity-reactjs`](https://www.npmjs.com/package/@ghostry/finity-reactjs) | [![minzipped size](https://flat.badgen.net/bundlephobia/minzip/@ghostry/finity-reactjs)](https://bundlephobia.com/package/@ghostry/finity-core) |
-| SolidJS   | [`@ghostry/finity-solidjs`](https://www.npmjs.com/package/@ghostry/finity-solidjs) | [![minzipped size](https://flat.badgen.net/bundlephobia/minzip/@ghostry/finity-solidjs)](https://bundlephobia.com/package/@ghostry/finity-core) |
+[![npm](https://img.shields.io/badge/npm-ffffff.svg?style=for-the-badge&color=000000&logo=npm&logoColor=CB3837)](https://www.npmjs.com/package/@ghostry/finity-core)
+[![npmx](https://img.shields.io/badge/npmx-ffffff.svg?style=for-the-badge&color=000000&logo=data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTMiIGhlaWdodD0iMTUzIiB2ZXJzaW9uPSIxLjEiIHZpZXdCb3g9IjAgMCAxNTMgMTUzIj4KICA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxNi43MDQgOS45ODI3KSI+CiAgICA8cGF0aCBkPSJtMC45MzQ3NiA5Ny4yMDVoMjQuMDgxdjIzLjY5M2gtMjQuMDgxeiIgZmlsbD0iI2ZmZiI+PC9wYXRoPgogICAgPHBhdGggZD0ibTEwMy4xMi05LjIzMDctMy42MjExIDEwLjI0Ni00Ni4zMDkgMTMxLTMuNjIxMSAxMC4yNDZoMTUuNTM3bDMuNjIxMS0xMC4yNDYgMTEuNzE3LTMzLjE0OCAzOC4yMTEtMTA4LjF6IiBmaWxsPSIjNTFjOGZjIj48L3BhdGg+CiAgPC9nPgo8L3N2Zz4K&logoColor=51C8FC)](https://npmx.dev/package/@ghostry/finity-core)
+[![jsr](https://img.shields.io/badge/jsr-ffffff?style=for-the-badge&color=000000&logo=jsr&logoColor=F7DF1E)](https://jsr.io/@ghostry/finity-core)
+[![github](https://img.shields.io/badge/github-ffffff?style=for-the-badge&color=000000&logo=github&logoColor=ffffff)](https://github.com/ghostry-dev/finity)
+<picture><img alt="typescript" src="https://img.shields.io/badge/typescript-ffffff?style=for-the-badge&color=000000&logo=typescript&logoColor=3178C6"></picture>
+<picture><img alt="bun" src="https://img.shields.io/badge/bun-ffffff?style=for-the-badge&color=000000&logo=bun&logoColor=FBF0DF"></picture>
+<picture><img alt="node" src="https://img.shields.io/badge/node-ffffff?style=for-the-badge&color=000000&logo=nodedotjs&logoColor=5FA04E"></picture>
+<picture><img alt="react" src="https://img.shields.io/badge/react-ffffff?style=for-the-badge&color=000000&logo=react&logoColor=61DAFB"></picture>
+<picture><img alt="solid" src="https://img.shields.io/badge/solid-ffffff?style=for-the-badge&color=000000&logo=solid&logoColor=4F88C6"></picture>
 
-_For other frameworks, you can implement a custom integration with [`@ghostry/finity-core`](https://www.npmjs.com/package/@ghostry/finity-core), or submit an issue to request support be added._
+[**Documentation**](https://docs.ghostry.dev/finity) &nbsp;·&nbsp; [**Guides**](https://docs.ghostry.dev/finity/guides/defining-states) &nbsp;·&nbsp; [**API Reference**](https://docs.ghostry.dev/finity/reference/api)
+
+</div>
+
+> [!WARNING]
+> v0 is in active development, and breaking changes occur frequently. Read the [changelog](https://docs.ghostry.dev/finity/changelog/finity) before every update.
+
+## Packages
+
+This is the monorepo for `finity`. Install the package for your framework.
+
+| Package                                            | Version                                                                                                                                                                 | Description                                                        |
+| -------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| [`@ghostry/finity-reactjs`](pkg/reactjs/README.md) | [![npm version](https://img.shields.io/npm/v/%40ghostry%2Ffinity-reactjs?style=flat-square&color=000000&label=)](https://www.npmjs.com/package/@ghostry/finity-reactjs) | finity for React.                                                  |
+| [`@ghostry/finity-solidjs`](pkg/solidjs/README.md) | [![npm version](https://img.shields.io/npm/v/%40ghostry%2Ffinity-solidjs?style=flat-square&color=000000&label=)](https://www.npmjs.com/package/@ghostry/finity-solidjs) | finity for Solid.                                                  |
+| [`@ghostry/finity-core`](pkg/core/README.md)       | [![npm version](https://img.shields.io/npm/v/%40ghostry%2Ffinity-core?style=flat-square&color=000000&label=)](https://www.npmjs.com/package/@ghostry/finity-core)       | finity without a framework, for writing an adapter to another one. |
+
+## Install
+
+```bash
+npm install @ghostry/finity-reactjs
+```
+
+Or `@ghostry/finity-solidjs` for Solid. finity has no runtime dependencies besides your framework.
 
 ## Example
 
-An example of the high-level states modeling user sign-in:
-
 ```tsx
-const State = defineTransitionalState<{
-  Anonymous: {};
-  SigningIn: { username: string; password: string };
-  BadCredentials: { username: string; password: string };
-  Authenticated: { username: string };
-  SigningOut: {};
-}>().transitions({
-  Anonymous: ['SigningIn'],
-  SigningIn: ['Authenticated', 'BadCredentials'],
-  BadCredentials: ['SigningIn', 'Anonymous'],
-  Authenticated: ['SigningOut'],
-  SigningOut: ['Anonymous'],
-});
+import { initialize, type TransitionalStates } from "@ghostry/finity-reactjs";
+import { useEffect } from "react";
 
-type State = UsingStrictlyTransitionalState<typeof State>;
-type States = TransitionalStates<typeof State>;
+const finity = initialize({});
 
-function SignIn() {
-  const state = useStrictlyTransitionalState(State, () => ({
-    kind: 'Anonymous',
+const SignIn = finity
+  .defineTransitionalState<{
+    SignedOut: {};
+    SigningIn: { username: string; password: string };
+    Rejected: { username: string };
+    SignedIn: { username: string };
+  }>("SignIn")
+  .transitions({
+    SignedOut: ["SigningIn"],
+    SigningIn: ["SignedIn", "Rejected"],
+    Rejected: ["SigningIn"],
+    SignedIn: [],
+  });
+
+type SignIns = TransitionalStates<typeof SignIn>;
+
+export function SignInPage() {
+  const state = finity.useStrictlyTransitionalState(SignIn, () => ({
+    kind: "SignedOut",
   }));
 
-  useEffect(state.value)
-    .case(['Anonymous', 'BadCredentials', 'Authenticated'], noop)
-    .case(['SigningIn'], ({ username, password, transition }) => {
-      api
-        .signIn()
-        .then(() => transition({ kind: 'Authenticated', username }))
-        .catch(() =>
-          transition({ kind: 'BadCredentials', username, password }),
-        );
-    })
-    .case(['SigningOut'], ({ transition }) => {
-      api.signOut().then(() => transition({ kind: 'Anonymous' }));
-    })
-    .use();
-
-  return useRender(state.value)
-    .case(['Anonymous', 'BadCredentials'], (state) => (
-      <>
-        <Message state={state} />
-        <Form
-          username={state.username}
-          password={state.password}
-          onSubmit={(credentials) =>
-            state.transition({ kind: 'SigningIn', ...credentials })
-          }
-        />
-      </>
+  return finity
+    .useRender(state.value)
+    .case(["SignedOut", "Rejected"], ({ transition }) => (
+      <SignInForm
+        onSubmit={(credentials) =>
+          transition({ kind: "SigningIn", ...credentials })
+        }
+      />
     ))
-    .case(['Authenticated'], (state) => <App state={state} />)
-    .case(['SigningIn', 'SigningOut'], () => <Loading />)
+    .case(["SigningIn"], (signingIn) => <SigningIn state={signingIn} />)
+    .case(["SignedIn"], ({ username }) => <p>Welcome, {username}.</p>)
     .use();
 }
 
-function Message(props: {
-  state: States['Anonymous'] | States['BadCredentials'];
-}) {
-  return useRender(() => props.state)
-    .case(['Anonymous'], () => <></>)
-    .case([
-      'BadCredentials',
-      ({ username }) => <div>Invalid password for {username}.</div>,
-    ])
-    .use();
-}
-```
-
-## Guide
-
-Regardless of the variant that you use, the library requires initialization. Consider creating a dedicated module for this, such as at `src/finity.ts`.
-
-> [!TIP]
-> This gives you an opportunity to rename or alias any of the library's functions or types if you desire.
-
-```ts
-import { initialize } from '@ghostry/finity-solidjs';
-
-export const {
-  defineTransitionalState,
-  useTransitionalState,
-  useStrictlyTransitionalState,
-  useState,
-  useEffect,
-  useRender,
-} = initialize({});
-
-export type * from '@ghostry/finity-solidjs';
-```
-
-In an application component, define the relevant states and their allowed transitions.
-
-```ts
-import * as finity from 'src/finity';
-
-const State = finity
-  .defineTransitionalState<{
-    Loading: {};
-    Ready: { resource: Resource };
-    Errored: { error: Error };
-  }>('MyState')
-  .transitions({
-    Loading: ['Ready', 'Errored'],
-    Ready: [],
-    Errored: [],
-  });
-```
-
-Here we have 3 states defined by the type argument: `Loading`, `Ready`, `Errored`.
-
-For each of those states, we declare the interface they should have. In addition to what we declare, each state will have a `kind` property with the literal state name.
-
-The call to `defineTransitionalState` also takes an optional argument to name the state, to assist in any future debug logging.
-
-Next, we declare which states each state is allowed to transition to. An empty array makes the state terminal (it cannot transition to any other state).
-
-Within a component, we can use our defined state with the `useStrictlyTransitionalState` or `useTransitionalState` hook, providing its initial value:
-
-```ts
-const state = finity.useStrictlyTransitionalState(State, () => ({
-  kind: 'Loading',
-}));
-```
-
-For the `Loading` state, we will want to fetch the resource. We can do this with the `useEffect` hook:
-
-```ts
-finity
-  .useEffect(state.value)
-  .case(['Loading'], ({ transition }) => {
+function SigningIn({ state }: { state: SignIns["SigningIn"] }) {
+  useEffect(() => {
+    const { username, password, transition } = state;
     api
-      .getTheResource()
-      .then((resource) => transition({ kind: 'Ready', resource }))
-      .catch((error) => transition({ kind: 'Errored', error }));
-  })
-  .case(['Ready', 'Errored'], noop)
-  .use();
-```
+      .signIn(username, password)
+      .then(() => transition({ kind: "SignedIn", username }))
+      .catch(() => transition({ kind: "Rejected", username }));
+  }, [state]);
 
-This is modeled similarly to a native `switch` statement. The `use` call at the end of the chain is where exhaustiveness checking takes place. If you omitted any of the states in the calls to `case`, then you will get a type error listing out the missing states:
-
-```
-This expression is not callable.
-  Type 'UnhandledStates<"Errored">' has no call signatures.
-```
-
-## Configuration
-
-Library initialization takes a configuration object with these optional properties.
-
-### `onInvalidTransition`
-
-While the types prevent transition functions from being called with invalid states, the consuming application's code can still perform invalid transitions. This config makes it possible to report such occurrences.
-
-> [!NOTE]
-> Performing an invalid transition will _not_ throw an error—it will simply call this configured function.
-
-The configured function receives an `InvalidTransitionError` with the following notable properties:
-
-- `reason`: indicates the type of invalid transition (`"stale"` or `"disallowed"`)
-- `state`:
-  - `name`: the name of the state if assigned
-  - `from`: the state at the time of attempted transition
-  - `to`: the state to which transition was attempted
-- `tick`:
-  - `current`: the state's monotonic counter value when the transition was attempted
-  - `bound`: the monotonic counter value that was required for the transition to be valid
-- `message`: a default error message with basic details
-- `stack`: a stack trace if the JS runtime supports it
-
-```ts
-const finity = initialize({
-  onInvalidTransition: ({ message, stack }) => {
-    console.warn(message, stack);
-  },
-});
-```
-
-#### Examples of invalid transitions
-
-Given the following allowed transitions:
-
-```ts
-finity
-  .defineTransitionalState<{
-    /* ... */
-  }>()
-  .transitions({
-    A: ['B', 'C'],
-    B: ['C'],
-    C: [],
-    D: [],
-  });
-```
-
-Overriding the types can lead to an invalid state transition:
-
-```ts
-finity.useEffect(state.value).case(['A'], ({ transition }) => {
-  /**
-   * This is simply a disallowed transition which will trigger the
-   * configured `onInvalidTransition` function at runtime
-   */
-  transition({ kind: 'D' } as any);
-});
-```
-
-Transitioning after the first transition:
-
-```ts
-finity.useEffect(state.value).case(['A'], ({ transition }) => {
-  /**
-   * Valid transition from A -> B
-   */
-  transition({ kind: 'B' });
-
-  /**
-   * According to the types, this is a valid transition from A -> C, but
-   * the state will have already transitioned to B, so this transition
-   * will not occur and will trigger `onInvalidTransition`
-   */
-  transition({ kind: 'C' });
-});
-```
-
-Similarly, the application may have a race condition. The winner of
-the race will determine the transition, the loser(s) will each trigger
-the `onInvalidTransition` function:
-
-```ts
-finity.useEffect(state.value).case(['A'], ({ transition }) => {
-  setTimeout(() => transition({ kind: 'B' }), Math.random() * 100);
-  setTimeout(() => transition({ kind: 'C' }), Math.random() * 100);
-});
-```
-
-_If a stale transition is made to a disallowed state, the `reason` will be `"stale"`, not `"disallowed"`._
-
-### `isEqualState`
-
-A state that is allowed to transition to its own `kind` (e.g. `Ready: ['Ready']`) may be transitioned to a state that is equal to the current one. Such a transition is skipped so that effects and renders depending on the state do not rerun.
-
-This config determines whether the two states are equal. It is only called when both states have the same `kind`, and the `transition` property is omitted from both states before they are compared.
-
-By default, states are compared with `shallowEqual` (exported from `@ghostry/finity-core`): they are equal if they have the same properties and each value is the same according to `Object.is`.
-
-```ts
-import { equals } from 'ramda';
-
-const finity = initialize({
-  isEqualState: equals,
-});
-```
-
-> [!NOTE]
-> A skipped transition is still a valid transition—it will _not_ call `onInvalidTransition`. Since the state did not change, the transition function also remains valid to call again.
-
-To always transition, even when the states are equal:
-
-```ts
-const finity = initialize({
-  isEqualState: () => false,
-});
-```
-
-## FAQ
-
-### Should I use `useStrictlyTransitionalState` or `useTransitionalState`?
-
-Prefer using the `useStrictlyTransitionalState` hook because it prevents the state from being set arbitrarily. In other words, any state change must be the result of a permitted transition.
-
-The `useTransitionalState` hook exposes the `transition` function on each state, but allows setting the state arbitrarily using methods on `state`, such as `state.set()`.
-
-### Do I need `useRender`?
-
-A native `switch` statement only guarantees exhaustiveness when falling through it is a type error. An unhandled state falls through to the end of the function and implicitly returns `undefined`, so TypeScript reports it only if the function's return type excludes `undefined`.
-
-In ReactJS, declare the component's return type as `React.JSX.Element`. An inferred return type, or `React.ReactNode`, includes `undefined`, and a missing case compiles:
-
-```tsx
-function View(): React.JSX.Element {
-  const current = state.value();
-  switch (current.kind) {
-    case 'Loading':
-      return <Loading />;
-    case 'Ready':
-      return <Resource resource={current.resource} />;
-    case 'Errored':
-      return <Retry />;
-  }
+  return <p>Signing in…</p>;
 }
 ```
 
-In SolidJS, or any other framework where the `JSX.Element` type includes `undefined`, no return type can make a `switch` exhaustive. Use `useRender`, or end the `switch` with `default: return never(current)`, using `never` from `@ghostry/finity-core`.
+`api` and `SignInForm` stand in for your own code. See the [docs site](https://docs.ghostry.dev/finity) for the full guide.
 
-> [!NOTE]
-> In SolidJS, a case's function is called once when its case starts to match, like a component, rather than every time the state changes. The state it receives updates in place while the case still matches (e.g. a transition from `Viewing` to `Deleting` in `.case(['Viewing', 'Deleting'], ...)`), so read its properties in JSX or another reactive scope. Like Solid props, destructuring the state captures its values once.
->
-> Without JSX, a case can return a function, which is rendered reactively:
->
-> ```ts
-> useRender(state.value)
->   .case(['Loading'], () => 'Loading…')
->   .case(['Viewing', 'Deleting'], (s) => () => `${s.kind}: ${s.data}`)
->   .use();
-> ```
+## States, not flags
 
-Note: the `useRender` function is not available in the `@ghostry/finity-core` package because it's implementation is entirely subject to a frontend framework.
+A component is in exactly one named state, and each state carries only the data it has. No `isLoading` beside an `error` that might be stale. See [Mental model](https://docs.ghostry.dev/finity/start/mental-model).
+
+## Transitions you declare
+
+Each state lists the states that may follow it. A transition you didn't declare doesn't compile, and a terminal state has no transitions at all. See [Defining states](https://docs.ghostry.dev/finity/guides/defining-states).
+
+## Every case handled
+
+`useRender` takes one case per state, and its chain only ends when every state is handled. A new state is a type error everywhere it's missing. See [Rendering](https://docs.ghostry.dev/finity/guides/rendering).
+
+## Stale transitions refused
+
+A transition from a state the component has already left is ignored and reported, so a slow request can't overwrite a newer state. See [Invalid transitions](https://docs.ghostry.dev/finity/guides/invalid-transitions).
+
+## License
+
+[MIT](LICENSE) © Patrick Rebsch
