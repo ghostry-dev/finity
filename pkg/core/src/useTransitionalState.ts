@@ -1,20 +1,20 @@
-import type { DefinedTransitionalState } from './defineTransitionalState.ts';
-import { FinityError, type Reason } from './Error.ts';
+import type { DefinedTransitionalState } from "./defineTransitionalState.ts";
+import { FinityError, type Reason } from "./Error.ts";
 import type {
   FiniteStateUnion,
   StateDefinition,
   TransitionalStateUnion,
   TransitionsDefinition,
-} from './States.ts';
-import { type Config, type FundamentalState, type Getter } from './Types.ts';
-import useClock from './useClock.ts';
-import type { UseRefHook } from './useRef.ts';
-import type { UseState, UseStateHook } from './useState.ts';
-import { shallowEqual } from './Utils.ts';
+} from "./States.ts";
+import { type Config, type FundamentalState, type Getter } from "./Types.ts";
+import useClock from "./useClock.ts";
+import type { UseRefHook } from "./useRef.ts";
+import type { UseState, UseStateHook } from "./useState.ts";
+import { shallowEqual } from "./Utils.ts";
 
 /**
- * At runtime, a state may carry a `transition` property (e.g. when spread
- * from a transitional state), which should not affect state equality.
+ * At runtime, a state may carry a `transition` property (e.g. when spread from
+ * a transitional state), which should not affect state equality.
  */
 const withoutTransition = ({
   transition: _,
@@ -26,9 +26,10 @@ const withoutTransition = ({
  */
 export type UsingTransitionalState<
   T extends DefinedTransitionalState<any, any, any>,
-> = T extends DefinedTransitionalState<infer K, infer S, infer X>
-  ? UseTransitionalState<K, S, X>
-  : never;
+> =
+  T extends DefinedTransitionalState<infer K, infer S, infer X>
+    ? UseTransitionalState<K, S, X>
+    : never;
 
 export interface UseTransitionalState<
   K extends string,
@@ -65,9 +66,9 @@ export default (
     type $State = FiniteStateUnion<K, S>;
     type $Use = UseTransitionalState<K, S, X>;
 
-    type $Set = $Use['set'];
-    type $Update = $Use['update'];
-    type $Value = $Use['value'];
+    type $Set = $Use["set"];
+    type $Update = $Use["update"];
+    type $Value = $Use["value"];
 
     const clock = useClock(useRef);
 
@@ -86,24 +87,17 @@ export default (
       config.onInvalidTransition?.(
         new FinityError.InvalidTransitionError({
           reason,
-          state: {
-            name: State.name,
-            from: latest.current,
-            to,
-          },
-          tick: {
-            current: clock.current(),
-            bound: boundTick,
-          },
+          state: { name: State.name, from: latest.current, to },
+          tick: { current: clock.current(), bound: boundTick },
         }),
       );
     };
 
     const bind = (s: $State): ReturnType<$Value> => {
       /**
-       * When the transition function is created, it should be bound
-       * to a particular tick of the clock, so that the transition
-       * function has no effect if the state has since been updated.
+       * When the transition function is created, it should be bound to a
+       * particular tick of the clock, so that the transition function has no
+       * effect if the state has since been updated.
        */
       const boundTick = clock.current();
 
@@ -111,23 +105,23 @@ export default (
         ...s,
         transition: (to: Exclude<$State, Function>): void => {
           if (clock.current() !== boundTick) {
-            return invalidTransition('stale', to, boundTick);
+            return invalidTransition("stale", to, boundTick);
           }
 
           const current = latest.current;
 
           if (!State.transitions[current.kind].includes(to.kind)) {
-            return invalidTransition('disallowed', to, boundTick);
+            return invalidTransition("disallowed", to, boundTick);
           }
 
           /**
-           * Transitioning to an equal state is skipped, so that effects do
-           * not rerun. The clock isn't advanced either, which leaves this
+           * Transitioning to an equal state is skipped, so that effects do not
+           * rerun. The clock isn't advanced either, which leaves this
            * transition function valid since the state hasn't changed.
            */
           if (
-            current.kind === to.kind &&
-            isEqualState(withoutTransition(current), withoutTransition(to))
+            current.kind === to.kind
+            && isEqualState(withoutTransition(current), withoutTransition(to))
           ) {
             return;
           }

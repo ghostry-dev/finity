@@ -7,9 +7,7 @@ export type TransitionsDefinition<K extends string> = Record<K, NoInfer<K[]>>;
 export type FiniteStateByKind<
   K extends string,
   S extends StateDefinition<K>,
-> = {
-  [k in K]: { kind: k } & S[k];
-};
+> = { [k in K]: { kind: k } & S[k] };
 
 export type FiniteStateUnion<
   K extends string,
@@ -26,9 +24,7 @@ export type TransitionalStateByKind<
         to: Exclude<
           X[k] extends never[]
             ? never
-            : {
-                [R in X[k][number]]: { kind: R } & S[R];
-              }[X[k][number]],
+            : { [R in X[k][number]]: { kind: R } & S[R] }[X[k][number]],
           Function
         >,
       ) => void;

@@ -2,13 +2,13 @@ import {
   ExhaustiveSwitchInstance,
   type ExhaustiveSwitch,
   type Getter,
-} from '@ghostry/finity-core';
-import { createEffect } from 'solid-js';
-import type { Config } from './Types.ts';
+} from "@ghostry/finity-core";
+import { createEffect } from "solid-js";
+import type { Config } from "./Types.ts";
 
 type EffectSwitch<
   S extends { kind: string },
-  C extends S['kind'],
+  C extends S["kind"],
 > = ExhaustiveSwitch<void, S, C>;
 
 class EffectSwitchInstance<
@@ -22,7 +22,7 @@ class EffectSwitchInstance<
         const [_, effect] = found;
         effect(s);
       } else {
-        throw new Error('[finity] Invalid state switch!');
+        throw new Error("[finity] Invalid state switch!");
       }
     });
   };

@@ -42,13 +42,23 @@
   },
   "scripts": {
     "build:reset": "rm -rf ./dist",
-    "build:compile": "bun --bun rslib build --config ../../rslib.shared.config.ts",
+    "build:compile": "bunx --no-install --bun rslib build --config ./rslib.config.ts",
+    "build:compile:rsdoctor": "RSDOCTOR=true bunx --no-install --bun rslib build --config ./rslib.config.ts",
+    "build:types": "bun --bun ../../node_modules/typescript-5/lib/tsc.js -p ./tsconfig.build.json --noEmit false --declaration --emitDeclarationOnly --declarationDir ./dist/types",
     "build:verify": "tsc --noEmit -p ./tsconfig.verify.json",
     "build:clean": "find ./dist -type f -name '*.tsbuildinfo' -delete",
-    "build": "bun run build:reset && bun run build:compile && bun run build:verify && bun run build:clean",
-    "outdated": "bun outdated"
+    "build": "bun run build:reset && bun run build:compile && bun run build:types && bun run build:verify && bun run build:clean",
+    "build:rsdoctor": "bun run build:reset && bun run build:compile:rsdoctor && bun run build:types && bun run build:verify && bun run build:clean",
+    "typecheck": "tsc --noEmit",
+    "typecheck:ts5": "bun --bun ../../node_modules/typescript-5/lib/tsc.js --noEmit",
+    "typecheck:jsr": "DENO_BIN_PATH=$PWD/../../node_modules/.bin/deno bunx --no-install jsr publish --dry-run --allow-dirty",
+    "format": "bun fmt",
+    "test": "bun run typecheck && bun run typecheck:ts5 && bun run typecheck:jsr && bun test"
   },
   "files": [
     "dist"
-  ]
+  ],
+  "devDependencies": {
+    "@ghostry/harness": "^0.0.7"
+  }
 }

@@ -8,19 +8,19 @@ export const noop = (): void => {};
  * ensure that the switch has exhausted all possible states.
  *
  * @example
- * ```ts
- * switch (foo) {
- *   case 'bar':
- *     break;
- *   case 'baz':
- *     break;
- *   default:
- *     never(foo);
- * }
- * ```
+ *   ```ts
+ *   switch (foo) {
+ *     case "bar":
+ *       break;
+ *     case "baz":
+ *       break;
+ *     default:
+ *       never(foo);
+ *   }
+ *   ```
  */
 export const never = (never: never): never => {
-  throw new Error('Impossible code branch reached!', never);
+  throw new Error("Impossible code branch reached!", never);
 };
 
 /**
@@ -39,8 +39,8 @@ export const shallowEqual = (a: object, b: object): boolean => {
 
   return aKeys.every(
     (key) =>
-      Object.hasOwn(b, key) &&
-      Object.is(
+      Object.hasOwn(b, key)
+      && Object.is(
         (a as Record<string, unknown>)[key],
         (b as Record<string, unknown>)[key],
       ),

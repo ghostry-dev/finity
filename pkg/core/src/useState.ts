@@ -1,4 +1,4 @@
-import type { Config, InitialValue } from './Types.ts';
+import type { Config, InitialValue } from "./Types.ts";
 
 export interface UseState<T extends {}> {
   value(): T;
@@ -23,10 +23,6 @@ export default (config: Config): UseStateHook => {
 
     const update = (fn: (prev: T) => T): T => setValue((prev) => fn(prev));
 
-    return {
-      value,
-      set,
-      update,
-    } as const;
+    return { value, set, update } as const;
   };
 };

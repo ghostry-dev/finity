@@ -3,7 +3,7 @@ import type {
   Getter,
   IsUnique,
   UnhandledStates,
-} from './Types.ts';
+} from "./Types.ts";
 
 /**
  * The implementation type for exhaustive state switching.
@@ -16,24 +16,25 @@ import type {
 export type ExhaustiveSwitch<
   R,
   S extends FundamentalState,
-  C extends S['kind'],
+  C extends S["kind"],
   F = R,
 > = {
   /**
-   * @param kinds - The `kind` of states that will be handled in this case.
-   * If the list contains duplicates, a type error will be raised:
-   * ```txt
-   * Argument of type 'string[]' is not assignable to parameter of type 'never'.
-   * ```
+   * @param kinds - The `kind` of states that will be handled in this case. If
+   *   the list contains duplicates, a type error will be raised:
    *
-   * @param fn - The function to evaluate when the state matches the
-   * given `kinds`.
+   *   ```txt
+   *   Argument of type 'string[]' is not assignable to parameter of type 'never'.
+   *   ```
+   *
+   * @param fn - The function to evaluate when the state matches the given
+   *   `kinds`.
    */
-  case: <const G extends Exclude<S['kind'], C>[]>(
+  case: <const G extends Exclude<S["kind"], C>[]>(
     kinds: IsUnique<[...G]> extends true ? [...G] : never,
     fn: (state: S extends { kind: G[number] } ? S : never) => F,
   ) => ExhaustiveSwitch<R, S, C | G[number], F>;
-  use: Exclude<S['kind'], C> extends infer U
+  use: Exclude<S["kind"], C> extends infer U
     ? [U] extends [never]
       ? () => R
       : UnhandledStates<U>
@@ -63,7 +64,7 @@ export class ExhaustiveSwitchInstance<R, S extends FundamentalState> {
       const [_, fn] = found;
       return fn(s);
     } else {
-      throw new Error('[finity] Invalid state switch!');
+      throw new Error("[finity] Invalid state switch!");
     }
   };
 }

@@ -1,4 +1,4 @@
-import type { FinityError } from './Error.ts';
+import type { FinityError } from "./Error.ts";
 
 /**
  * Represents the common structure of state types for this library.
@@ -10,8 +10,8 @@ export interface FundamentalState {
 }
 
 /**
- * Used as a descriptive type error when an exhaustive switch lacks cases
- * to handle all states.
+ * Used as a descriptive type error when an exhaustive switch lacks cases to
+ * handle all states.
  *
  * @private
  */
@@ -22,9 +22,7 @@ export interface UnhandledStates<_Unhandled> {
 /**
  * A function that returns a `T` type.
  */
-export type Getter<T extends {}> = {
-  (): T;
-};
+export type Getter<T extends {}> = { (): T };
 
 /**
  * A function that sets a `T` type.
@@ -57,9 +55,9 @@ export interface Config {
   onInvalidTransition?: (error: FinityError.InvalidTransitionError) => void;
 
   /**
-   * Determines whether the state being transitioned to is equal to the
-   * current state, in which case the transition is skipped: the state is not
-   * updated, so dependent effects and renders do not rerun.
+   * Determines whether the state being transitioned to is equal to the current
+   * state, in which case the transition is skipped: the state is not updated,
+   * so dependent effects and renders do not rerun.
    *
    * Only called when both states have the same `kind`. The `transition`
    * property is omitted from both states before they are compared.
@@ -72,9 +70,8 @@ export interface Config {
 /**
  * A utility type used to ensure a tuple does not contain duplicate items.
  *
- * @see https://stackoverflow.com/a/69386479/1454953
- *
  * @private
+ * @see https://stackoverflow.com/a/69386479/1454953
  */
 export type IsUnique<T extends readonly unknown[]> = T extends readonly [
   infer First,
@@ -90,6 +87,4 @@ export type IsUnique<T extends readonly unknown[]> = T extends readonly [
  *
  * @private
  */
-export type Prettify<T> = {
-  [K in keyof T]: T[K];
-} & {};
+export type Prettify<T> = { [K in keyof T]: T[K] } & {};

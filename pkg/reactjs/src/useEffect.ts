@@ -2,13 +2,13 @@ import {
   ExhaustiveSwitchInstance,
   type ExhaustiveSwitch,
   type Getter,
-} from '@ghostry/finity-core';
-import * as React from 'react';
-import type { Config } from './Types.ts';
+} from "@ghostry/finity-core";
+import * as React from "react";
+import type { Config } from "./Types.ts";
 
 type EffectSwitch<
   S extends { kind: string },
-  C extends S['kind'],
+  C extends S["kind"],
 > = ExhaustiveSwitch<void, S, C>;
 
 class EffectSwitchInstance<

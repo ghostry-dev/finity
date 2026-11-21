@@ -1,39 +1,25 @@
-import { defineConfig } from '@rslib/core';
+import { defineConfig } from "@rslib/core";
 
 export default defineConfig({
   lib: [
     {
-      format: 'esm',
-      syntax: 'es6',
+      format: "esm",
+      syntax: "es6",
       bundle: false,
       autoExtension: false,
-      dts: {
-        distPath: './dist/types',
-      },
-      output: {
-        distPath: {
-          root: './dist/esm',
-        },
-      },
+      dts: false,
+      output: { distPath: { root: "./dist/esm" } },
     },
   ],
-  source: {
-    tsconfigPath: './tsconfig.json',
-  },
+  source: { tsconfigPath: "./tsconfig.build.json" },
   output: {
-    target: 'web',
+    target: "web",
     minify: {
       jsOptions: {
-        minimizerOptions: {
-          minify: true,
-          compress: true,
-          mangle: true,
-        },
+        minimizerOptions: { minify: true, compress: true, mangle: true },
       },
     },
-    distPath: {
-      root: './dist',
-    },
+    distPath: { root: "./dist" },
     cleanDistPath: true,
     sourceMap: false,
   },

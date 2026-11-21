@@ -1,11 +1,9 @@
 {
-  "extends": "../../tsconfig.json",
-  "include": ["src"],
+  "extends": "../../tsconfig.base.json",
+  "include": ["./src/**/*", "./test/**/*"],
   "compilerOptions": {
-    "declaration": true,
-    "declarationDir": "./dist/types",
-    "isolatedDeclarations": true,
-    "rootDir": "./src",
+    "rootDir": ".",
+    "lib": ["ESNext", "DOM"],
     "jsx": "react-jsx"
   }
 }

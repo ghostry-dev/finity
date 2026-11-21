@@ -1,4 +1,4 @@
-import type { UseStateHook } from './useState.ts';
+import type { UseStateHook } from "./useState.ts";
 
 export interface UseRef<T> {
   current: T;

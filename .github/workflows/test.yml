@@ -17,6 +17,7 @@ jobs:
       fail-fast: false
       matrix:
         pkg:
+          - core
           - solidjs
           - reactjs
     runs-on: ubuntu-latest

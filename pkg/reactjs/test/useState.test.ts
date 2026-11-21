@@ -1,10 +1,9 @@
-import { renderHook } from '@testing-library/react';
-import { describe, expect, test } from 'vitest';
-import { initialize } from './index.ts';
+import { renderHook } from "@testing-library/react";
+import { describe, expect, initialize, test } from "./index.ts";
 
 const finity = initialize({});
 
-test('setting the state', async () => {
+test("setting the state", async () => {
   const { result, rerender } = renderHook(() => finity.useState(0));
 
   expect(result.current.value()).toBe(0);
@@ -15,7 +14,7 @@ test('setting the state', async () => {
   expect(result.current.value()).toBe(1);
 });
 
-test('updating the state', async () => {
+test("updating the state", async () => {
   const { result, rerender } = renderHook(() => finity.useState(0));
 
   expect(result.current.value()).toBe(0);
@@ -26,8 +25,8 @@ test('updating the state', async () => {
   expect(result.current.value()).toBe(1);
 });
 
-describe('initial value deferred with a function', () => {
-  test('setting the state', async () => {
+describe("initial value deferred with a function", () => {
+  test("setting the state", async () => {
     const { result, rerender } = renderHook(() => finity.useState(() => 0));
 
     expect(result.current.value()).toBe(0);
@@ -38,7 +37,7 @@ describe('initial value deferred with a function', () => {
     expect(result.current.value()).toBe(1);
   });
 
-  test('updating the state', async () => {
+  test("updating the state", async () => {
     const { result, rerender } = renderHook(() => finity.useState(() => 0));
 
     expect(result.current.value()).toBe(0);
@@ -50,8 +49,8 @@ describe('initial value deferred with a function', () => {
   });
 });
 
-describe('a function as the state value', () => {
-  test('setting the state', async () => {
+describe("a function as the state value", () => {
+  test("setting the state", async () => {
     const { result, rerender } = renderHook(() =>
       finity.useState((): (() => number) => () => 0),
     );
@@ -64,7 +63,7 @@ describe('a function as the state value', () => {
     expect(result.current.value()()).toBe(1);
   });
 
-  test('updating the state', async () => {
+  test("updating the state", async () => {
     const { result, rerender } = renderHook(() =>
       finity.useState((): (() => number) => () => 0),
     );

@@ -2,21 +2,21 @@
  * https://github.com/solidjs/solid/discussions/1527
  */
 
-import type { Getter } from '@ghostry/finity-core';
-import { createMemo, For, Match, Switch, untrack, type JSX } from 'solid-js';
+import type { Getter } from "@ghostry/finity-core";
+import { createMemo, For, Match, Switch, untrack, type JSX } from "solid-js";
 
 /**
- * What a case may render. A function is rendered reactively, so that a case
- * can read the state without JSX, e.g. `(s) => () => s.kind`.
+ * What a case may render. A function is rendered reactively, so that a case can
+ * read the state without JSX, e.g. `(s) => () => s.kind`.
  */
 export type CaseElement = JSX.Element | (() => JSX.Element);
 
 /**
- * The state as seen by a case: its properties read the latest state while it
- * is handled by the case, so that a transition within the case updates the
- * rendered elements instead of rendering the case again. Once the state is
- * no longer handled by the case, its properties keep their last values, so
- * that a late transition is rejected as stale.
+ * The state as seen by a case: its properties read the latest state while it is
+ * handled by the case, so that a transition within the case updates the
+ * rendered elements instead of rendering the case again. Once the state is no
+ * longer handled by the case, its properties keep their last values, so that a
+ * late transition is rejected as stale.
  */
 const live = <S extends { kind: string }>(
   state: Getter<S>,
@@ -49,14 +49,14 @@ export function Render<S extends { kind: string }>(props: {
           <Match
             when={kinds.includes(props.state().kind)}
             /**
-             * The children of the matching case are read in a tracked
-             * scope, which is only rerun when a different case matches.
-             * Rendering the case untracked keeps it from rerunning every
-             * time the state changes.
+             * The children of the matching case are read in a tracked scope,
+             * which is only rerun when a different case matches. Rendering the
+             * case untracked keeps it from rerunning every time the state
+             * changes.
              *
-             * A function that the case returns is rendered reactively,
-             * like any function child, though `JSX.Element` excludes it,
-             * so the typecast is necessary.
+             * A function that the case returns is rendered reactively, like any
+             * function child, though `JSX.Element` excludes it, so the typecast
+             * is necessary.
              */
             children={
               untrack(() => render(live(props.state, kinds))) as JSX.Element

@@ -1,43 +1,29 @@
 {
-  "name": "@ghostry/finity",
-  "private": "true",
+  "name": "@ghostry/finity-monorepo",
+  "private": true,
   "version": "0.0.12",
   "license": "MIT",
-  "description": "Finite state management with exhaustiveness and transition enforcement for TypeScript.",
-  "keywords": [
-    "finite state",
-    "state management",
-    "TypeScript",
-    "frontend",
-    "exhaustive",
-    "switch",
-    "transition"
-  ],
-  "author": {
-    "name": "Patrick Rebsch"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ghostry-dev/finity"
-  },
-  "homepage": "https://github.com/ghostry-dev/finity",
-  "bugs": "https://github.com/ghostry-dev/finity/issues",
-  "type": "module",
   "workspaces": [
     "pkg/*"
   ],
+  "scripts": {
+    "build": "bun --cwd=pkg/core run build && bun --cwd=pkg/reactjs run build && bun --cwd=pkg/solidjs run build",
+    "typecheck": "bun run build && bun --cwd=pkg/core run typecheck && bun --cwd=pkg/reactjs run typecheck && bun --cwd=pkg/solidjs run typecheck && bun run typecheck:ts5 && bun run typecheck:jsr",
+    "typecheck:ts5": "bun --cwd=pkg/core run typecheck:ts5 && bun --cwd=pkg/reactjs run typecheck:ts5 && bun --cwd=pkg/solidjs run typecheck:ts5",
+    "typecheck:jsr": "bun --cwd=pkg/core run typecheck:jsr && bun --cwd=pkg/reactjs run typecheck:jsr && bun --cwd=pkg/solidjs run typecheck:jsr",
+    "test": "bun run build && bun --cwd=pkg/core run test && bun --cwd=pkg/reactjs run test && bun --cwd=pkg/solidjs run test",
+    "outdated": "bun outdated --recursive",
+    "format": "bun fmt"
+  },
   "devDependencies": {
+    "@rsdoctor/rspack-plugin": "^1.6.5",
     "@rslib/core": "^1.0.4",
+    "@types/bun": "^1.4.4",
+    "deno": "2.9.6",
     "jsr": "^0.14.3",
     "npm": "^12.2.1",
-    "turbo": "^2.11.10",
-    "typescript": "^7.0.2"
-  },
-  "scripts": {
-    "build:reset": "turbo run build:reset",
-    "build": "turbo run build",
-    "outdated": "bun outdated && turbo run outdated",
-    "test": "turbo run test"
-  },
-  "packageManager": "bun@1.4.4"
+    "oxfmt": "^0.77.0",
+    "typescript": "^7.0.2",
+    "typescript-5": "npm:typescript@^5.9.3"
+  }
 }

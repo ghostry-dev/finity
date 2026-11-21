@@ -1,30 +1,31 @@
-import type { DefinedTransitionalState } from './defineTransitionalState.ts';
+import type { DefinedTransitionalState } from "./defineTransitionalState.ts";
 import type {
   FiniteStateUnion,
   StateDefinition,
   TransitionsDefinition,
-} from './States.ts';
-import type { Config, Getter } from './Types.ts';
+} from "./States.ts";
+import type { Config, Getter } from "./Types.ts";
 import {
   default as _useTransitionalState,
   type UseTransitionalState,
-} from './useTransitionalState.ts';
+} from "./useTransitionalState.ts";
 
 /**
- * Returns the strictly-transitional state type from a defined
- * transitional state.
+ * Returns the strictly-transitional state type from a defined transitional
+ * state.
  */
 export type UsingStrictlyTransitionalState<
   T extends DefinedTransitionalState<any, any, any>,
-> = T extends DefinedTransitionalState<infer K, infer S, infer X>
-  ? UseStrictlyTransitionalState<K, S, X>
-  : never;
+> =
+  T extends DefinedTransitionalState<infer K, infer S, infer X>
+    ? UseStrictlyTransitionalState<K, S, X>
+    : never;
 
 export interface UseStrictlyTransitionalState<
   K extends string,
   S extends StateDefinition<K>,
   X extends Record<K, NoInfer<K>[]>,
-> extends Omit<UseTransitionalState<K, S, X>, 'set' | 'update'> {}
+> extends Omit<UseTransitionalState<K, S, X>, "set" | "update"> {}
 
 export type UseStrictlyTransitionalStateHook = <
   K extends string,

@@ -1,11 +1,15 @@
+/**
+ * Managed by the @ghostry meta repo (.templates/library/tsconfig.base.json).
+ * Edit it there and run `bun .scripts/sync.ts`; changes made here are
+ * overwritten.
+ */
 {
   "compilerOptions": {
-    "lib": ["ESNext", "DOM"],
-    "target": "ES6",
+    "target": "ES2019",
     "module": "NodeNext",
     "moduleDetection": "force",
     "allowJs": false,
-
+    "types": ["@types/bun"],
     "moduleResolution": "NodeNext",
     "verbatimModuleSyntax": true,
     "allowImportingTsExtensions": true,
@@ -14,13 +18,13 @@
     "tsBuildInfoFile": null,
     "listEmittedFiles": true,
     "isolatedModules": true,
-
     "strict": true,
+    "exactOptionalPropertyTypes": true,
     "skipLibCheck": true,
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noUncheckedIndexedAccess": true,
-    "noPropertyAccessFromIndexSignature": true
+    "noPropertyAccessFromIndexSignature": false
   }
 }

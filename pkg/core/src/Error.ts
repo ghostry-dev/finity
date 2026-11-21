@@ -13,7 +13,7 @@
  * @module
  */
 
-import type { FundamentalState } from './Types.ts';
+import type { FundamentalState } from "./Types.ts";
 
 interface StateInfo {
   name: string | undefined;
@@ -26,7 +26,7 @@ interface ClockTickInfo {
   bound: number;
 }
 
-export type Reason = 'stale' | 'disallowed';
+export type Reason = "stale" | "disallowed";
 
 interface InvalidTransitionContext {
   reason: Reason;
@@ -40,14 +40,14 @@ interface InvalidTransitionContext {
 export abstract class FinityError extends Error {
   constructor(message?: string) {
     super(message);
-    this.name = '@ghostry/finity-core:FinityError';
+    this.name = "@ghostry/finity-core:FinityError";
   }
 }
 
 export namespace FinityError {
   /**
-   * An `Error` type that provides information about a state transition that
-   * was rejected.
+   * An `Error` type that provides information about a state transition that was
+   * rejected.
    */
   export class InvalidTransitionError extends FinityError {
     /** The reason for rejecting the state transition. */
@@ -68,15 +68,15 @@ export namespace FinityError {
         state.name ? `of "${state.name}"` : ``,
         `from "${state.from.kind}"`,
         `to "${state.to.kind}"`,
-        reason === 'stale'
-          ? `because the transition should have occurred at tick ${tick.bound} ` +
-            `but other state changes have advanced the tick to ${tick.current}`
+        reason === "stale"
+          ? `because the transition should have occurred at tick ${tick.bound} `
+            + `but other state changes have advanced the tick to ${tick.current}`
           : ``,
-      ].join(' ');
+      ].join(" ");
 
       super(message);
 
-      this.name = '@ghostry/finity-core:InvalidTransitionError';
+      this.name = "@ghostry/finity-core:InvalidTransitionError";
       this.reason = reason;
       this.state = state;
       this.tick = tick;
