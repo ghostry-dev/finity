@@ -1,6 +1,6 @@
 {
   "name": "@ghostry/finity-reactjs",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "license": "MIT",
   "description": "Finite state with exhaustive cases and enforced transitions, for React.",
   "keywords": [

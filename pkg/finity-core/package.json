@@ -1,6 +1,6 @@
 {
   "name": "@ghostry/finity-core",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "license": "MIT",
   "description": "The framework-agnostic core of finity, for adapting it to another framework.",
   "keywords": [

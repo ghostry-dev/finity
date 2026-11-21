@@ -18,14 +18,14 @@
     },
     "pkg/finity-core": {
       "name": "@ghostry/finity-core",
-      "version": "0.0.12",
+      "version": "0.0.13",
       "devDependencies": {
         "@ghostry/harness": "^0.0.7",
       },
     },
     "pkg/finity-reactjs": {
       "name": "@ghostry/finity-reactjs",
-      "version": "0.0.12",
+      "version": "0.0.13",
       "dependencies": {
         "@ghostry/finity-core": "workspace:*",
       },
@@ -46,7 +46,7 @@
     },
     "pkg/finity-solidjs": {
       "name": "@ghostry/finity-solidjs",
-      "version": "0.0.12",
+      "version": "0.0.13",
       "dependencies": {
         "@ghostry/finity-core": "workspace:*",
       },

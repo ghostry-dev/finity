@@ -11,7 +11,7 @@ Context for working on this codebase. It isn't user-facing: it says how the pack
 | `@ghostry/finity-solidjs` | `pkg/finity-solidjs` | Supplies Solid's `createSignal` to core and adds `useRender`, built on its internal `Render` component.                       |
 
 - Each package has its own version and releases on its own, tagged `<package>/vX.Y.Z` (`finity-core/v0.0.13`), like any @ghostry monorepo. The bare tags up to `v0.0.12` are older releases that each covered all three packages.
-- finity-reactjs and finity-solidjs depend on finity-core as `workspace:*`, which publishes as the exact version in the workspace (`"0.0.12"`). So a finity-core release reaches React and Solid users only when those packages release too, and finity-core publishes first.
+- finity-reactjs and finity-solidjs depend on finity-core as `workspace:*`, which publishes as the exact version in the workspace (`"0.0.13"`). So a finity-core release reaches React and Solid users only when those packages release too, and finity-core publishes first.
 - The framework packages re-export core's errors and define none of their own, so every error `name` starts with `@ghostry/finity-core`.
 - `rslib.shared.config.ts` holds the build settings all three share. Each package's `rslib.config.ts` extends it and adds its framework's plugin.
 
