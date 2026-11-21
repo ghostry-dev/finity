@@ -1,17 +1,16 @@
 {
   "name": "@ghostry/finity-monorepo",
   "private": true,
-  "version": "0.0.12",
   "license": "MIT",
   "workspaces": [
     "pkg/*"
   ],
   "scripts": {
-    "build": "bun --cwd=pkg/core run build && bun --cwd=pkg/reactjs run build && bun --cwd=pkg/solidjs run build",
-    "typecheck": "bun run build && bun --cwd=pkg/core run typecheck && bun --cwd=pkg/reactjs run typecheck && bun --cwd=pkg/solidjs run typecheck && bun run typecheck:ts5 && bun run typecheck:jsr",
-    "typecheck:ts5": "bun --cwd=pkg/core run typecheck:ts5 && bun --cwd=pkg/reactjs run typecheck:ts5 && bun --cwd=pkg/solidjs run typecheck:ts5",
-    "typecheck:jsr": "bun --cwd=pkg/core run typecheck:jsr && bun --cwd=pkg/reactjs run typecheck:jsr && bun --cwd=pkg/solidjs run typecheck:jsr",
-    "test": "bun run build && bun --cwd=pkg/core run test && bun --cwd=pkg/reactjs run test && bun --cwd=pkg/solidjs run test",
+    "build": "bun --cwd=pkg/finity-core run build && bun --cwd=pkg/finity-reactjs run build && bun --cwd=pkg/finity-solidjs run build",
+    "typecheck": "bun run build && bun --cwd=pkg/finity-core run typecheck && bun --cwd=pkg/finity-reactjs run typecheck && bun --cwd=pkg/finity-solidjs run typecheck && bun run typecheck:ts5 && bun run typecheck:jsr",
+    "typecheck:ts5": "bun --cwd=pkg/finity-core run typecheck:ts5 && bun --cwd=pkg/finity-reactjs run typecheck:ts5 && bun --cwd=pkg/finity-solidjs run typecheck:ts5",
+    "typecheck:jsr": "bun --cwd=pkg/finity-core run typecheck:jsr && bun --cwd=pkg/finity-reactjs run typecheck:jsr && bun --cwd=pkg/finity-solidjs run typecheck:jsr",
+    "test": "bun run build && bun --cwd=pkg/finity-core run test && bun --cwd=pkg/finity-reactjs run test && bun --cwd=pkg/finity-solidjs run test",
     "outdated": "bun outdated --recursive",
     "format": "bun fmt"
   },

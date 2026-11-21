@@ -19,7 +19,7 @@
 </div>
 
 > [!WARNING]
-> v0 is in active development, and breaking changes occur frequently. Read the [changelog](https://docs.ghostry.dev/finity/changelog/finity) before every update.
+> v0 is in active development, and breaking changes occur frequently. Read the [changelog](https://docs.ghostry.dev/finity/changelog/finity-core) before every update.
 
 For React or Solid, install [`@ghostry/finity-reactjs`](https://www.npmjs.com/package/@ghostry/finity-reactjs) or [`@ghostry/finity-solidjs`](https://www.npmjs.com/package/@ghostry/finity-solidjs) instead. Both are built on this package.
 

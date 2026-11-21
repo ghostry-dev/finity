@@ -23,17 +23,17 @@ Declare a component's states and which state may follow which. TypeScript then r
 </div>
 
 > [!WARNING]
-> v0 is in active development, and breaking changes occur frequently. Read the [changelog](https://docs.ghostry.dev/finity/changelog/finity) before every update.
+> v0 is in active development, and breaking changes occur frequently. Read the [changelog](https://docs.ghostry.dev/finity/changelog/finity-core) before every update.
 
 ## Packages
 
 This is the monorepo for `finity`. Install the package for your framework.
 
-| Package                                            | Version                                                                                                                                                                 | Description                                                        |
-| -------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| [`@ghostry/finity-reactjs`](pkg/reactjs/README.md) | [![npm version](https://img.shields.io/npm/v/%40ghostry%2Ffinity-reactjs?style=flat-square&color=000000&label=)](https://www.npmjs.com/package/@ghostry/finity-reactjs) | finity for React.                                                  |
-| [`@ghostry/finity-solidjs`](pkg/solidjs/README.md) | [![npm version](https://img.shields.io/npm/v/%40ghostry%2Ffinity-solidjs?style=flat-square&color=000000&label=)](https://www.npmjs.com/package/@ghostry/finity-solidjs) | finity for Solid.                                                  |
-| [`@ghostry/finity-core`](pkg/core/README.md)       | [![npm version](https://img.shields.io/npm/v/%40ghostry%2Ffinity-core?style=flat-square&color=000000&label=)](https://www.npmjs.com/package/@ghostry/finity-core)       | finity without a framework, for writing an adapter to another one. |
+| Package                                                   | Version                                                                                                                                                                 | Description                                                        |
+| --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| [`@ghostry/finity-reactjs`](pkg/finity-reactjs/README.md) | [![npm version](https://img.shields.io/npm/v/%40ghostry%2Ffinity-reactjs?style=flat-square&color=000000&label=)](https://www.npmjs.com/package/@ghostry/finity-reactjs) | finity for React.                                                  |
+| [`@ghostry/finity-solidjs`](pkg/finity-solidjs/README.md) | [![npm version](https://img.shields.io/npm/v/%40ghostry%2Ffinity-solidjs?style=flat-square&color=000000&label=)](https://www.npmjs.com/package/@ghostry/finity-solidjs) | finity for Solid.                                                  |
+| [`@ghostry/finity-core`](pkg/finity-core/README.md)       | [![npm version](https://img.shields.io/npm/v/%40ghostry%2Ffinity-core?style=flat-square&color=000000&label=)](https://www.npmjs.com/package/@ghostry/finity-core)       | finity without a framework, for writing an adapter to another one. |
 
 ## Install
 

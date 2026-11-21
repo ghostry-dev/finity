@@ -1,8 +1,8 @@
 {
-  "name": "@ghostry/finity-reactjs",
+  "name": "@ghostry/finity-core",
   "version": "0.0.12",
   "license": "MIT",
-  "description": "Finite state with exhaustive cases and enforced transitions, for React.",
+  "description": "The framework-agnostic core of finity, for adapting it to another framework.",
   "keywords": [
     "finite state",
     "state management",
@@ -18,7 +18,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ghostry-dev/finity",
-    "directory": "pkg/reactjs"
+    "directory": "pkg/finity-core"
   },
   "homepage": "https://docs.ghostry.dev/finity",
   "bugs": "https://github.com/ghostry-dev/finity/issues",
@@ -58,21 +58,7 @@
   "files": [
     "dist"
   ],
-  "dependencies": {
-    "@ghostry/finity-core": "workspace:*"
-  },
-  "peerDependencies": {
-    "react": ">=16.8"
-  },
   "devDependencies": {
-    "@ghostry/harness": "^0.0.7",
-    "@happy-dom/global-registrator": "^21.0.4",
-    "@rsbuild/plugin-react": "^2.1.1",
-    "@testing-library/dom": "^10.4.2",
-    "@testing-library/react": "^16.3.3",
-    "@types/react": "^19.3.0",
-    "@types/react-dom": "^19.3.0",
-    "react": "^19.3.1",
-    "react-dom": "^19.3.1"
+    "@ghostry/harness": "^0.0.7"
   }
 }

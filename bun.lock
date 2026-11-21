@@ -16,14 +16,14 @@
         "typescript-5": "npm:typescript@^5.9.3",
       },
     },
-    "pkg/core": {
+    "pkg/finity-core": {
       "name": "@ghostry/finity-core",
       "version": "0.0.12",
       "devDependencies": {
         "@ghostry/harness": "^0.0.7",
       },
     },
-    "pkg/reactjs": {
+    "pkg/finity-reactjs": {
       "name": "@ghostry/finity-reactjs",
       "version": "0.0.12",
       "dependencies": {
@@ -44,7 +44,7 @@
         "react": ">=16.8",
       },
     },
-    "pkg/solidjs": {
+    "pkg/finity-solidjs": {
       "name": "@ghostry/finity-solidjs",
       "version": "0.0.12",
       "dependencies": {
@@ -163,11 +163,11 @@
 
     "@emnapi/wasi-threads": ["@emnapi/wasi-threads@1.2.3", "", { "dependencies": { "tslib": "^2.4.0" } }, "sha512-ELEBe8PsLvvJ6QMr0zLt8ffvOHW/dc1m3CEzNMg7aJUv3bMaoDtw2TXyDAwkYBuroxxuHEwhRTLJSe5sya547g=="],
 
-    "@ghostry/finity-core": ["@ghostry/finity-core@workspace:pkg/core"],
+    "@ghostry/finity-core": ["@ghostry/finity-core@workspace:pkg/finity-core"],
 
-    "@ghostry/finity-reactjs": ["@ghostry/finity-reactjs@workspace:pkg/reactjs"],
+    "@ghostry/finity-reactjs": ["@ghostry/finity-reactjs@workspace:pkg/finity-reactjs"],
 
-    "@ghostry/finity-solidjs": ["@ghostry/finity-solidjs@workspace:pkg/solidjs"],
+    "@ghostry/finity-solidjs": ["@ghostry/finity-solidjs@workspace:pkg/finity-solidjs"],
 
     "@ghostry/harness": ["@ghostry/harness@0.0.7", "", {}, "sha512-QGyYK1XFEE5vQ3Jsn9DIpkEYx3KpDOAgGMeSA/WX6UX5XCdukdUThPmxeHDKgT1u795tJqmYlh/mJUWcQTVTvQ=="],
 

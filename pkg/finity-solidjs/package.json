@@ -1,8 +1,8 @@
 {
-  "name": "@ghostry/finity-core",
+  "name": "@ghostry/finity-solidjs",
   "version": "0.0.12",
   "license": "MIT",
-  "description": "The framework-agnostic core of finity, for adapting it to another framework.",
+  "description": "Finite state with exhaustive cases and enforced transitions, for Solid.",
   "keywords": [
     "finite state",
     "state management",
@@ -18,7 +18,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ghostry-dev/finity",
-    "directory": "pkg/core"
+    "directory": "pkg/finity-solidjs"
   },
   "homepage": "https://docs.ghostry.dev/finity",
   "bugs": "https://github.com/ghostry-dev/finity/issues",
@@ -53,12 +53,26 @@
     "typecheck:ts5": "bun --bun ../../node_modules/typescript-5/lib/tsc.js --noEmit",
     "typecheck:jsr": "DENO_BIN_PATH=$PWD/../../node_modules/.bin/deno bunx --no-install jsr publish --dry-run --allow-dirty",
     "format": "bun fmt",
-    "test": "bun run typecheck && bun run typecheck:ts5 && bun run typecheck:jsr && bun test"
+    "test": "bun run typecheck && bun run typecheck:ts5 && bun run typecheck:jsr && bun test --conditions browser"
   },
   "files": [
     "dist"
   ],
+  "dependencies": {
+    "@ghostry/finity-core": "workspace:*"
+  },
+  "peerDependencies": {
+    "solid-js": ">=1"
+  },
   "devDependencies": {
-    "@ghostry/harness": "^0.0.7"
+    "@babel/core": "^8.1.3",
+    "@babel/preset-typescript": "^8.0.7",
+    "@ghostry/harness": "^0.0.7",
+    "@happy-dom/global-registrator": "^21.0.4",
+    "@rsbuild/plugin-babel": "^2.1.0",
+    "@rsbuild/plugin-solid": "^1.2.2",
+    "@solidjs/testing-library": "^0.8.10",
+    "babel-preset-solid": "^1.9.19",
+    "solid-js": "^1.9.17"
   }
 }

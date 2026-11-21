@@ -1,24 +1,64 @@
-name: Build and Test Packages
+# Managed by the @ghostry meta repo (.templates/workflows/generate.ts). Edit it
+# there and run `bun .scripts/sync.ts`; changes made here are overwritten.
+name: Build and Test
 
 on:
   pull_request:
     branches: ["*"]
-  workflow_call:
-    outputs:
-      build-run-id:
-        value: ${{ jobs.build.outputs.run-id }}
 
 jobs:
-  build:
-    name: Build
+  build-finity-core:
+    name: Build `finity-core`
     uses: ./.github/workflows/build.yml
+    with:
+      package: finity-core
+      path: pkg/finity-core
 
-  test:
-    name: Test
+  test-finity-core:
+    name: Test `finity-core`
     uses: ./.github/workflows/test.yml
-    needs:
-      - build
+    needs: [build-finity-core]
     permissions:
       actions: read
     with:
-      build-run-id: ${{ needs.build.outputs.run-id }}
+      package: finity-core
+      path: pkg/finity-core
+      build-run-id: ${{ needs.build-finity-core.outputs.run-id }}
+
+  build-finity-reactjs:
+    name: Build `finity-reactjs`
+    uses: ./.github/workflows/build.yml
+    needs: [build-finity-core]
+    with:
+      package: finity-reactjs
+      path: pkg/finity-reactjs
+
+  test-finity-reactjs:
+    name: Test `finity-reactjs`
+    uses: ./.github/workflows/test.yml
+    needs: [build-finity-reactjs]
+    permissions:
+      actions: read
+    with:
+      package: finity-reactjs
+      path: pkg/finity-reactjs
+      build-run-id: ${{ needs.build-finity-reactjs.outputs.run-id }}
+
+  build-finity-solidjs:
+    name: Build `finity-solidjs`
+    uses: ./.github/workflows/build.yml
+    needs: [build-finity-core]
+    with:
+      package: finity-solidjs
+      path: pkg/finity-solidjs
+
+  test-finity-solidjs:
+    name: Test `finity-solidjs`
+    uses: ./.github/workflows/test.yml
+    needs: [build-finity-solidjs]
+    permissions:
+      actions: read
+    with:
+      package: finity-solidjs
+      path: pkg/finity-solidjs
+      build-run-id: ${{ needs.build-finity-solidjs.outputs.run-id }}

@@ -1,8 +1,14 @@
+# Managed by the @ghostry meta repo (.templates/workflows/generate.ts). Edit it
+# there and run `bun .scripts/sync.ts`; changes made here are overwritten.
 ##
-# Changing the version in a commit to main will automatically publish the packages
-# under that version.
+# Changing a package's version in a commit to main publishes it under that
+# version. The GitHub release is created with an empty body; notes are written
+# afterwards with the meta repo's release-notes skill.
 #
-name: Build, Test, and Release Packages
+# This file's name matters: each package's npm trusted publisher names
+# `main.yml`, since npm checks the calling workflow, not `publish.yml`.
+#
+name: Build, Test, and Release
 
 on:
   push:
@@ -10,74 +16,226 @@ on:
       - main
 
 jobs:
-  build:
-    name: Build
+  build-finity-core:
+    name: Build `finity-core`
     uses: ./.github/workflows/build.yml
+    with:
+      package: finity-core
+      path: pkg/finity-core
 
-  test:
-    name: Test
+  test-finity-core:
+    name: Test `finity-core`
     uses: ./.github/workflows/test.yml
-    needs: [build]
+    needs: [build-finity-core]
     permissions:
       actions: read
     with:
-      build-run-id: ${{ needs.build.outputs.run-id }}
+      package: finity-core
+      path: pkg/finity-core
+      build-run-id: ${{ needs.build-finity-core.outputs.run-id }}
 
-  get-version:
-    name: Get current version
-    runs-on: ubuntu-latest
+  build-finity-reactjs:
+    name: Build `finity-reactjs`
+    uses: ./.github/workflows/build.yml
+    needs: [build-finity-core]
+    with:
+      package: finity-reactjs
+      path: pkg/finity-reactjs
+
+  test-finity-reactjs:
+    name: Test `finity-reactjs`
+    uses: ./.github/workflows/test.yml
+    needs: [build-finity-reactjs]
+    permissions:
+      actions: read
+    with:
+      package: finity-reactjs
+      path: pkg/finity-reactjs
+      build-run-id: ${{ needs.build-finity-reactjs.outputs.run-id }}
+
+  build-finity-solidjs:
+    name: Build `finity-solidjs`
+    uses: ./.github/workflows/build.yml
+    needs: [build-finity-core]
+    with:
+      package: finity-solidjs
+      path: pkg/finity-solidjs
+
+  test-finity-solidjs:
+    name: Test `finity-solidjs`
+    uses: ./.github/workflows/test.yml
+    needs: [build-finity-solidjs]
+    permissions:
+      actions: read
+    with:
+      package: finity-solidjs
+      path: pkg/finity-solidjs
+      build-run-id: ${{ needs.build-finity-solidjs.outputs.run-id }}
+
+  version-finity-core:
+    name: Check for a release (`finity-core`)
+    runs-on: ubuntu-26.04
+    permissions:
+      contents: read
     outputs:
-      version: ${{ steps.read-version.outputs.version }}
+      version: ${{ steps.read.outputs.version }}
+      tag: ${{ steps.read.outputs.tag }}
+      exists: ${{ steps.read.outputs.exists }}
     steps:
       - name: Checkout
         uses: actions/checkout@v7
 
-      - name: Install Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version-file: .bun-version
+      - name: Read the version and look for its release
+        id: read
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version="v$(jq -r .version pkg/finity-core/package.json)"
+          tag="finity-core/$version"
+          echo "version=$version" >> $GITHUB_OUTPUT
+          echo "tag=$tag" >> $GITHUB_OUTPUT
+          if gh release view "$tag" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+            exists=true
+          else
+            exists=false
+          fi
+          echo "Release $tag already exists? $exists"
+          echo "exists=$exists" >> $GITHUB_OUTPUT
 
-      - name: Install Dependencies
-        run: bun install --frozen-lockfile
-
-      - name: Read package version
-        id: read-version
-        run: echo "version=v$(bunx --no-install npm view ./ version)" >> $GITHUB_OUTPUT
-
-  check-release:
-    name: Check for existing release
-    needs: [get-version]
-    runs-on: ubuntu-latest
+  version-finity-reactjs:
+    name: Check for a release (`finity-reactjs`)
+    runs-on: ubuntu-26.04
+    permissions:
+      contents: read
     outputs:
-      exists: ${{ steps.release-exists.outputs.result }}
+      version: ${{ steps.read.outputs.version }}
+      tag: ${{ steps.read.outputs.tag }}
+      exists: ${{ steps.read.outputs.exists }}
     steps:
-      - name: Find existing release if it exists
-        id: release-exists
-        uses: actions/github-script@v9
-        with:
-          result-encoding: string
-          script: |
-            return github.rest.repos.getReleaseByTag({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              tag: '${{ needs.get-version.outputs.version }}',
-            }).then(() => 'true').catch(() => 'false');
+      - name: Checkout
+        uses: actions/checkout@v7
 
-      - name: Release `${{ needs.get-version.outputs.version }}` already exists?
-        run: echo "${{ steps.release-exists.outputs.result }}"
+      - name: Read the version and look for its release
+        id: read
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version="v$(jq -r .version pkg/finity-reactjs/package.json)"
+          tag="finity-reactjs/$version"
+          echo "version=$version" >> $GITHUB_OUTPUT
+          echo "tag=$tag" >> $GITHUB_OUTPUT
+          if gh release view "$tag" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+            exists=true
+          else
+            exists=false
+          fi
+          echo "Release $tag already exists? $exists"
+          echo "exists=$exists" >> $GITHUB_OUTPUT
 
-  publish:
-    name: Publish
-    if: ${{ needs.check-release.outputs.exists == 'false' }}
+  version-finity-solidjs:
+    name: Check for a release (`finity-solidjs`)
+    runs-on: ubuntu-26.04
+    permissions:
+      contents: read
+    outputs:
+      version: ${{ steps.read.outputs.version }}
+      tag: ${{ steps.read.outputs.tag }}
+      exists: ${{ steps.read.outputs.exists }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Read the version and look for its release
+        id: read
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version="v$(jq -r .version pkg/finity-solidjs/package.json)"
+          tag="finity-solidjs/$version"
+          echo "version=$version" >> $GITHUB_OUTPUT
+          echo "tag=$tag" >> $GITHUB_OUTPUT
+          if gh release view "$tag" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+            exists=true
+          else
+            exists=false
+          fi
+          echo "Release $tag already exists? $exists"
+          echo "exists=$exists" >> $GITHUB_OUTPUT
+
+  ##
+  # A package that depends on another package in this repo publishes after it.
+  # Its dependency range may have a lower bound equal to the version this same
+  # push releases, and JSR resolves that range against npm when it publishes.
+  # `publish.yml` ends only once the new version is visible on npm.
+  #
+  # A job whose `needs` was skipped is skipped too, unless its `if` says
+  # otherwise, and a dependency's publish is skipped whenever it has no new
+  # version. `!cancelled() && !failure()` replaces the implicit `success()`:
+  # it still runs after a skipped publish, and still stops after a failed
+  # build, test, or publish.
+  ##
+
+  publish-finity-core:
+    name: Publish (`finity-core`)
+    if: ${{ needs.version-finity-core.outputs.exists == 'false' }}
     uses: ./.github/workflows/publish.yml
-    needs: [build, test, get-version, check-release]
+    needs:
+      - build-finity-core
+      - test-finity-core
+      - version-finity-core
     permissions:
       actions: read
       attestations: write
       contents: write
       id-token: write
     with:
-      version: ${{ needs.get-version.outputs.version }}
-      build-run-id: ${{ needs.build.outputs.run-id }}
-    secrets:
-      NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+      package: finity-core
+      path: pkg/finity-core
+      version: ${{ needs.version-finity-core.outputs.version }}
+      tag: ${{ needs.version-finity-core.outputs.tag }}
+      release-name: finity-core ${{ needs.version-finity-core.outputs.version }}
+      build-run-id: ${{ needs.build-finity-core.outputs.run-id }}
+
+  publish-finity-reactjs:
+    name: Publish (`finity-reactjs`)
+    if: ${{ !cancelled() && !failure() && needs.version-finity-reactjs.outputs.exists == 'false' }}
+    uses: ./.github/workflows/publish.yml
+    needs:
+      - build-finity-reactjs
+      - test-finity-reactjs
+      - version-finity-reactjs
+      - publish-finity-core
+    permissions:
+      actions: read
+      attestations: write
+      contents: write
+      id-token: write
+    with:
+      package: finity-reactjs
+      path: pkg/finity-reactjs
+      version: ${{ needs.version-finity-reactjs.outputs.version }}
+      tag: ${{ needs.version-finity-reactjs.outputs.tag }}
+      release-name: finity-reactjs ${{ needs.version-finity-reactjs.outputs.version }}
+      build-run-id: ${{ needs.build-finity-reactjs.outputs.run-id }}
+
+  publish-finity-solidjs:
+    name: Publish (`finity-solidjs`)
+    if: ${{ !cancelled() && !failure() && needs.version-finity-solidjs.outputs.exists == 'false' }}
+    uses: ./.github/workflows/publish.yml
+    needs:
+      - build-finity-solidjs
+      - test-finity-solidjs
+      - version-finity-solidjs
+      - publish-finity-core
+    permissions:
+      actions: read
+      attestations: write
+      contents: write
+      id-token: write
+    with:
+      package: finity-solidjs
+      path: pkg/finity-solidjs
+      version: ${{ needs.version-finity-solidjs.outputs.version }}
+      tag: ${{ needs.version-finity-solidjs.outputs.tag }}
+      release-name: finity-solidjs ${{ needs.version-finity-solidjs.outputs.version }}
+      build-run-id: ${{ needs.build-finity-solidjs.outputs.run-id }}

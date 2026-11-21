@@ -1,15 +1,29 @@
-name: Build Packages
+# Managed by the @ghostry meta repo (.templates/workflows/generate.ts). Edit it
+# there and run `bun .scripts/sync.ts`; changes made here are overwritten.
+name: Build
 
 on:
   workflow_call:
+    inputs:
+      package:
+        required: true
+        type: string
+        description: >-
+          The package's id: the repo name for a single-package repo, or its
+          directory name under `pkg/`. One job per package, so a package that
+          fails blocks only its own dependents and its own release.
+      path:
+        required: true
+        type: string
+        description: The package directory relative to the repo root (`.` or `pkg/<id>`).
     outputs:
       run-id:
         value: ${{ github.run_id }}
 
 jobs:
-  build-pkg-core:
-    name: Build `pkg/core`
-    runs-on: ubuntu-latest
+  build:
+    name: Build
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -22,53 +36,30 @@ jobs:
       - name: Install Dependencies
         run: bun install --frozen-lockfile
 
-      - name: Build `pkg/core`
-        working-directory: pkg/core
-        run: bun run build
-
-      - name: Upload `pkg/core`
-        uses: actions/upload-artifact@v7
-        with:
-          name: pkg-core
-          path: pkg/core/dist
-          if-no-files-found: error
-
-  build-pkg:
-    needs:
-      - build-pkg-core
-    strategy:
-      fail-fast: false
-      matrix:
-        pkg:
-          - solidjs
-          - reactjs
-    name: Build `pkg/${{ matrix.pkg }}`
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v7
-
-      - name: Install Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version-file: .bun-version
-
-      - name: Install Dependencies
-        run: bun install --frozen-lockfile
-
-      - name: Download `pkg/core` build
+      ##
+      # A package resolves the in-repo packages it depends on through their
+      # built `dist`, not their source, so that output has to be in place
+      # before it can even type-check. It is downloaded, never rebuilt: each
+      # package builds once per run, and every dependent consumes that same
+      # artifact.
+      #
+      # No `run-id`: reusable workflows run as jobs inside the calling run, so
+      # this resolves against the current run. The caller orders it with
+      # `needs:`.
+      #
+      - name: Download `@ghostry/finity-core`
+        if: contains(fromJSON('["finity-reactjs","finity-solidjs"]'), inputs.package)
         uses: actions/download-artifact@v8
         with:
-          name: pkg-core
-          path: pkg/core/dist
+          name: pkg-finity-core
+          path: pkg/finity-core/dist
 
-      - name: Build `pkg/${{ matrix.pkg }}`
-        working-directory: pkg/${{ matrix.pkg }}
-        run: bun run build
+      - name: Build
+        run: bun --cwd=${{ inputs.path }} run build
 
-      - name: Upload `pkg/${{ matrix.pkg }}`
+      - name: Upload
         uses: actions/upload-artifact@v7
         with:
-          name: pkg-${{ matrix.pkg }}
-          path: pkg/${{ matrix.pkg }}/dist
+          name: pkg-${{ inputs.package }}
+          path: ${{ inputs.path }}/dist
           if-no-files-found: error

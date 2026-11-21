@@ -22,7 +22,7 @@ Declare a component's states and which state may follow which. TypeScript then r
 </div>
 
 > [!WARNING]
-> v0 is in active development, and breaking changes occur frequently. Read the [changelog](https://docs.ghostry.dev/finity/changelog/finity) before every update.
+> v0 is in active development, and breaking changes occur frequently. Read the [changelog](https://docs.ghostry.dev/finity/changelog/finity-solidjs) before every update.
 
 ## Install
 
