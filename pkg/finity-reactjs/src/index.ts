@@ -10,7 +10,6 @@ export type {
   ExhaustiveSwitchInstance,
   FinityError,
   Getter,
-  InvalidTransitionError,
   Setter,
   TransitionalState,
   TransitionalStates,

@@ -83,13 +83,3 @@ export namespace FinityError {
     }
   }
 }
-
-/**
- * @deprecated Use {@link FinityError.InvalidTransitionError}, the same class.
- */
-export const InvalidTransitionError: typeof FinityError.InvalidTransitionError =
-  FinityError.InvalidTransitionError;
-/**
- * @deprecated Use {@link FinityError.InvalidTransitionError}, the same class.
- */
-export type InvalidTransitionError = FinityError.InvalidTransitionError;

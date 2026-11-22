@@ -32,8 +32,10 @@ test("every subclass in the namespace is covered", () => {
   );
 });
 
-test("each top-level export is the namespace class itself", () => {
-  expect(Exports.InvalidTransitionError).toBe(
-    FinityError.InvalidTransitionError,
-  );
+test("no error class is exported outside the namespace", () => {
+  const exported = Object.keys(Exports);
+
+  for (const name of Object.keys(FinityError)) {
+    expect(exported).not.toContain(name);
+  }
 });

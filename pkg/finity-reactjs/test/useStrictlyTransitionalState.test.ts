@@ -1,4 +1,4 @@
-import { FinityError, InvalidTransitionError } from "@ghostry/finity-core";
+import { FinityError } from "@ghostry/finity-core";
 import { act, renderHook } from "@testing-library/react";
 import * as React from "react";
 import { describe, expect, initialize, it, test, vi } from "./index.ts";
@@ -175,8 +175,4 @@ describe("re-rendering without a state change", () => {
       expect(error.state.from).toMatchObject({ kind: "Ready", resource: 1 });
     }
   });
-});
-
-test("the top-level `InvalidTransitionError` is the namespace class", () => {
-  expect(InvalidTransitionError).toBe(FinityError.InvalidTransitionError);
 });
