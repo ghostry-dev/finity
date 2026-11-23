@@ -1,6 +1,6 @@
 import { FinityError, type Getter } from "@ghostry/finity-core";
 import { renderHook } from "@testing-library/react";
-import { expect, initialize, test } from "./index.ts";
+import { attest, expect, initialize, test } from "./index.ts";
 
 const finity = initialize({});
 
@@ -56,12 +56,14 @@ test("rendering a state that no case handles", () => {
     { kind: "Loading" } | { kind: "Ready" }
   >;
 
-  expect(() =>
+  const error = attest.throws(FinityError.UnhandledStateError, () =>
     renderHook(() =>
       finity
         .useRender(state)
         .case(["Loading", "Ready"], (s) => s.kind)
         .use(),
     ),
-  ).toThrow(FinityError.UnhandledStateError);
+  );
+
+  expect(error.kind).toBe("Paused");
 });

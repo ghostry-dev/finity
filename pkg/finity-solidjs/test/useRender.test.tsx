@@ -7,6 +7,7 @@ import type {
 import { render, renderHook } from "@solidjs/testing-library";
 import { untrack } from "solid-js";
 import {
+  attest,
   describe,
   expect,
   initialize,
@@ -112,14 +113,15 @@ test("rendering a state that no case handles", async () => {
   const error = spyOn(console, "error").mockImplementation(() => {});
   const warn = spyOn(console, "warn").mockImplementation(() => {});
 
-  expect(() =>
+  const thrown = attest.throws(FinityError.UnhandledStateError, () =>
     render(() =>
       finity
         .useRender(state)
         .case(["Loading", "Ready"], () => null)
         .use(),
     ),
-  ).toThrow(FinityError.UnhandledStateError);
+  );
+  expect(thrown.kind).toBe("Paused");
 
   resume();
   await new Promise<void>(queueMicrotask);
@@ -292,6 +294,8 @@ describe("rendering a case", () => {
     expect(s).toEqual({ kind: "Viewing", id: "x", data: 1 });
 
     expect(onInvalidTransition).toHaveBeenCalledOnce();
-    expect(onInvalidTransition.mock.calls[0]![0].reason).toBe("stale");
+    const [error] = attest.definitely(onInvalidTransition.mock.calls[0]);
+    attest.instanceOf(error, FinityError.InvalidTransitionError);
+    expect(error.reason).toBe("stale");
   });
 });

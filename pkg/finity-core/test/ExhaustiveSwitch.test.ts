@@ -1,5 +1,5 @@
 import { ExhaustiveSwitchInstance, FinityError } from "../src/index.ts";
-import { expect, test } from "./index.ts";
+import { attest, expect, test } from "./index.ts";
 
 test("a state that no case handles is an error", () => {
   const unhandled = new ExhaustiveSwitchInstance<string, { kind: string }>(
@@ -7,13 +7,9 @@ test("a state that no case handles is an error", () => {
     [[["Known"], () => "known"]],
   );
 
-  let error: unknown;
-  try {
-    unhandled.use();
-  } catch (e) {
-    error = e;
-  }
+  const error = attest.throws(FinityError.UnhandledStateError, () =>
+    unhandled.use(),
+  );
 
-  expect(error).toBeInstanceOf(FinityError.UnhandledStateError);
-  expect((error as FinityError.UnhandledStateError).kind).toBe("Unknown");
+  expect(error.kind).toBe("Unknown");
 });

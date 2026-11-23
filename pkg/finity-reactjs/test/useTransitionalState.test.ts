@@ -1,6 +1,6 @@
 import { FinityError } from "@ghostry/finity-core";
 import { act, renderHook } from "@testing-library/react";
-import { describe, expect, initialize, it, test, vi } from "./index.ts";
+import { attest, describe, expect, initialize, it, test, vi } from "./index.ts";
 
 const finity = initialize({});
 
@@ -126,17 +126,17 @@ describe("transitioning to a disallowed state", () => {
         { kind: "A" },
       );
 
-      expect($error).toBeInstanceOf(FinityError.InvalidTransitionError);
+      attest.instanceOf($error, FinityError.InvalidTransitionError);
 
-      expect($error?.name).toBe("@ghostry/finity-core:InvalidTransitionError");
-      expect($error?.reason).toBe("disallowed");
-      expect($error?.state.name).toStrictEqual("ab");
-      expect($error?.state.from).toMatchObject({ kind: "B" });
-      expect($error?.state.to).toMatchObject({ kind: "A" });
-      expect($error?.tick.current).toBe(0);
-      expect($error?.tick.bound).toBe(0);
-      expect($error?.message).toBeTypeOf("string");
-      expect($error?.stack).toBeTypeOf("string");
+      expect($error.name).toBe("@ghostry/finity-core:InvalidTransitionError");
+      expect($error.reason).toBe("disallowed");
+      expect($error.state.name).toStrictEqual("ab");
+      expect($error.state.from).toMatchObject({ kind: "B" });
+      expect($error.state.to).toMatchObject({ kind: "A" });
+      expect($error.tick.current).toBe(0);
+      expect($error.tick.bound).toBe(0);
+      expect($error.message).toBeTypeOf("string");
+      expect($error.stack).toBeTypeOf("string");
     });
   });
 });
@@ -240,7 +240,8 @@ describe("transitioning after state already updated", () => {
       expect(s).toEqual({ kind: "B" });
 
       expect(onInvalidTransition).toHaveBeenCalledOnce();
-      const [error] = onInvalidTransition.mock.calls[0]!;
+      const [error] = attest.definitely(onInvalidTransition.mock.calls[0]);
+      attest.instanceOf(error, FinityError.InvalidTransitionError);
       expect(error.reason).toBe("stale");
       expect(error.state.from).toMatchObject({ kind: "B" });
       expect(error.state.to).toMatchObject({ kind: "C" });

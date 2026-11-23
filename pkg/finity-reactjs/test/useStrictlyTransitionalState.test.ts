@@ -1,7 +1,7 @@
 import { FinityError } from "@ghostry/finity-core";
 import { act, renderHook } from "@testing-library/react";
 import * as React from "react";
-import { describe, expect, initialize, it, test, vi } from "./index.ts";
+import { attest, describe, expect, initialize, it, test, vi } from "./index.ts";
 
 const finity = initialize({});
 
@@ -80,17 +80,17 @@ describe("transitioning to a disallowed state", () => {
         { kind: "A" },
       );
 
-      expect($error).toBeInstanceOf(FinityError.InvalidTransitionError);
+      attest.instanceOf($error, FinityError.InvalidTransitionError);
 
-      expect($error?.name).toBe("@ghostry/finity-core:InvalidTransitionError");
-      expect($error?.reason).toBe("disallowed");
-      expect($error?.state.name).toStrictEqual("ab");
-      expect($error?.state.from).toMatchObject({ kind: "B" });
-      expect($error?.state.to).toMatchObject({ kind: "A" });
-      expect($error?.tick.current).toBe(0);
-      expect($error?.tick.bound).toBe(0);
-      expect($error?.message).toBeTypeOf("string");
-      expect($error?.stack).toBeTypeOf("string");
+      expect($error.name).toBe("@ghostry/finity-core:InvalidTransitionError");
+      expect($error.reason).toBe("disallowed");
+      expect($error.state.name).toStrictEqual("ab");
+      expect($error.state.from).toMatchObject({ kind: "B" });
+      expect($error.state.to).toMatchObject({ kind: "A" });
+      expect($error.tick.current).toBe(0);
+      expect($error.tick.bound).toBe(0);
+      expect($error.message).toBeTypeOf("string");
+      expect($error.stack).toBeTypeOf("string");
     });
   });
 });
