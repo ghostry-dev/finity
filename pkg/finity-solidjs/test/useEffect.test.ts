@@ -1,5 +1,15 @@
 import { renderHook } from "@solidjs/testing-library";
-import { expect, initialize, test, testEffectInStages } from "./index.ts";
+import { createSignal } from "solid-js";
+import {
+  describe,
+  expect,
+  initialize,
+  isSolid2,
+  it,
+  settle,
+  spyOn,
+  test,
+} from "./index.ts";
 
 const finity = initialize({});
 
@@ -11,30 +21,74 @@ const State = finity
   }>("MyState")
   .transitions({ Loading: ["Ready", "Errored"], Ready: [], Errored: [] });
 
-test("transitioning the state", async () => {
-  const { result: state } = renderHook(finity.useTransitionalState, {
-    initialProps: [State, () => ({ kind: "Loading" }) as const],
+test("transitioning the state", () => {
+  const seen: string[] = [];
+
+  const { result: state } = renderHook(() => {
+    const state = finity.useTransitionalState(State, () => ({
+      kind: "Loading",
+    }));
+
+    finity
+      .useEffect(state.value)
+      .case(["Loading"], (s) => {
+        seen.push(s.kind);
+        s.transition({ kind: "Ready", resource: 123 });
+      })
+      .case(["Ready", "Errored"], (s) => {
+        seen.push(s.kind);
+      })
+      .use();
+
+    return state;
   });
 
-  await testEffectInStages((done) => [
-    () => {
-      const s = state.value();
-      expect(s.kind).toEqual("Loading");
+  settle();
+
+  const { transition, ...s } = state.value();
+  expect(s).toEqual({ kind: "Ready", resource: 123 });
+  expect(seen).toEqual(["Loading", "Ready"]);
+});
+
+describe("a case", () => {
+  it("runs again only when the state changes", () => {
+    /**
+     * Solid 2 warns that the case's read of `other` won't rerun it, which is
+     * what this tests.
+     */
+    const warn = spyOn(console, "warn").mockImplementation(() => {});
+
+    const [other, setOther] = createSignal(0);
+    let runs = 0;
+
+    const { result: state } = renderHook(() => {
+      const state = finity.useTransitionalState(State, () => ({
+        kind: "Loading",
+      }));
 
       finity
         .useEffect(state.value)
-        .case(["Loading"], (s) => {
-          s.transition({ kind: "Ready", resource: 123 });
-        })
-        .case(["Ready", "Errored"], (s) => {
-          throw `Unexpected state: ${s.kind}`;
+        .case(["Loading", "Ready", "Errored"], () => {
+          other();
+          runs++;
         })
         .use();
-    },
-    () => {
-      const { transition, ...s } = state.value();
-      expect(s).toEqual({ kind: "Ready", resource: 123 });
-      done();
-    },
-  ]);
+
+      return state;
+    });
+
+    settle();
+    expect(runs).toBe(1);
+
+    setOther(1);
+    settle();
+    expect(runs).toBe(1);
+
+    state.set({ kind: "Ready", resource: 1 });
+    settle();
+    expect(runs).toBe(2);
+
+    if (isSolid2) expect(warn).toHaveBeenCalled();
+    warn.mockRestore();
+  });
 });

@@ -1,9 +1,10 @@
 import {
   ExhaustiveSwitchInstance,
+  FinityError,
   type ExhaustiveSwitch,
   type Getter,
 } from "@ghostry/finity-core";
-import { createEffect } from "solid-js";
+import { effect } from "./Solid.ts";
 import type { Config } from "./Types.ts";
 
 type EffectSwitch<
@@ -14,15 +15,18 @@ type EffectSwitch<
 class EffectSwitchInstance<
   S extends { kind: string },
 > extends ExhaustiveSwitchInstance<void, S> {
+  /**
+   * Only the state is tracked, so a case runs once per state, not again when
+   * something else it reads changes.
+   */
   public use = (): void => {
-    createEffect(() => {
-      const s = this.state();
+    effect(this.state, (s) => {
       const found = this.cases.find(([kinds, _]) => kinds.includes(s.kind));
       if (found) {
         const [_, effect] = found;
         effect(s);
       } else {
-        throw new Error("[finity] Invalid state switch!");
+        throw new FinityError.UnhandledStateError(s.kind);
       }
     });
   };

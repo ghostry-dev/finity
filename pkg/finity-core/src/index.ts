@@ -89,7 +89,7 @@ export interface Initialized {
  */
 export const initialize = (config: Config): Initialized => {
   const useState = $useState(config);
-  const useRef = $useRef(useState);
+  const useRef = config.useRef ?? $useRef(useState);
   const useTransitionalState = $useTransitionalState(config, useState, useRef);
   const useStrictlyTransitionalState = $useStrictlyTransitionalState(
     config,

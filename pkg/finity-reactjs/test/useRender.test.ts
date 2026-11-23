@@ -1,3 +1,4 @@
+import { FinityError, type Getter } from "@ghostry/finity-core";
 import { renderHook } from "@testing-library/react";
 import { expect, initialize, test } from "./index.ts";
 
@@ -47,4 +48,20 @@ test("rendering with the case function of the latest render", async () => {
   rerender({ n: 2 });
 
   expect(result.current).toBe("Loading:2");
+});
+
+test("rendering a state that no case handles", () => {
+  /** A cast is the only way past the switch's types to an unhandled kind. */
+  const state = (() => ({ kind: "Paused" })) as unknown as Getter<
+    { kind: "Loading" } | { kind: "Ready" }
+  >;
+
+  expect(() =>
+    renderHook(() =>
+      finity
+        .useRender(state)
+        .case(["Loading", "Ready"], (s) => s.kind)
+        .use(),
+    ),
+  ).toThrow(FinityError.UnhandledStateError);
 });

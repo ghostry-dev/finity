@@ -82,4 +82,22 @@ export namespace FinityError {
       this.tick = tick;
     }
   }
+
+  /**
+   * An `Error` thrown by a switch's `use`, like `useEffect` or `useRender`,
+   * when no case handles the state's `kind`.
+   *
+   * A switch's types require a case for every kind, so this only happens to a
+   * state that came from outside them: a cast, untyped code, or a `kind` its
+   * definition doesn't declare.
+   */
+  export class UnhandledStateError extends FinityError {
+    constructor(
+      /** The `kind` of the state that no case handles. */
+      public readonly kind: string,
+    ) {
+      super(`[finity] No case handles the state's kind "${kind}"`);
+      this.name = "@ghostry/finity-core:UnhandledStateError";
+    }
+  }
 }

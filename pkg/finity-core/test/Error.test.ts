@@ -15,6 +15,7 @@ const errors: ReadonlyArray<readonly [string, FinityError]> = [
       tick: { current: 0, bound: 0 },
     }),
   ],
+  ["UnhandledStateError", new FinityError.UnhandledStateError("Unknown")],
 ];
 
 test.each(errors)(

@@ -3,20 +3,19 @@ import {
   type ExhaustiveSwitch,
   type Getter,
 } from "@ghostry/finity-core";
-import { type JSX } from "solid-js";
-import { Render, type CaseElement } from "./Render.tsx";
+import { render, type CaseElement, type SolidElement } from "./Render.ts";
 import type { Config } from "./Types.ts";
 
 type RenderSwitch<
   S extends { kind: string },
   C extends S["kind"],
-> = ExhaustiveSwitch<JSX.Element, S, C, CaseElement>;
+> = ExhaustiveSwitch<SolidElement, S, C, CaseElement>;
 
 class RenderSwitchInstance<
   S extends { kind: string },
 > extends ExhaustiveSwitchInstance<CaseElement, S> {
-  public use = (): JSX.Element => {
-    return Render({ state: this.state, cases: this.cases });
+  public use = (): SolidElement => {
+    return render(this.state, this.cases);
   };
 }
 

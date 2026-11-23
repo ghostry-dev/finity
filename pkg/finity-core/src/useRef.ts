@@ -7,7 +7,8 @@ export interface UseRef<T> {
 export type UseRefHook = <T>(initial: () => T) => UseRef<T>;
 
 /**
- * A mutable value that is shared by every render of a component.
+ * A mutable value that is shared by every render of a component, used unless
+ * `Config.useRef` supplies the framework's own.
  *
  * It is built on the native state primitive: the state is never set, so its
  * value is always the same object, whose `current` property can be mutated

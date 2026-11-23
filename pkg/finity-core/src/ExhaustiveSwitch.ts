@@ -1,3 +1,4 @@
+import { FinityError } from "./Error.ts";
 import type {
   FundamentalState,
   Getter,
@@ -64,7 +65,7 @@ export class ExhaustiveSwitchInstance<R, S extends FundamentalState> {
       const [_, fn] = found;
       return fn(s);
     } else {
-      throw new Error("[finity] Invalid state switch!");
+      throw new FinityError.UnhandledStateError(s.kind);
     }
   };
 }

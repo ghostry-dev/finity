@@ -1,5 +1,6 @@
 import {
   ExhaustiveSwitchInstance,
+  FinityError,
   type ExhaustiveSwitch,
   type Getter,
 } from "@ghostry/finity-core";
@@ -27,7 +28,7 @@ class RenderSwitchInstance<
       const [_, render] = found;
       return render(s);
     } else {
-      throw new Error("[finity] Invalid state switch!");
+      throw new FinityError.UnhandledStateError(s.kind);
     }
   };
 }

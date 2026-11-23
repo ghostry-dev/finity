@@ -50,6 +50,19 @@ export interface Config {
   useState: <T extends {}>(initial: () => T) => [Getter<T>, Setter<T>];
 
   /**
+   * Defines the hook for a mutable value that lasts as long as the component,
+   * which finity uses for its own bookkeeping.
+   *
+   * Defaults to a ref built on `useState`, whose state is never set, as a
+   * framework that runs its components more than once needs. A framework that
+   * runs each component once, like Solid, can return a plain object instead,
+   * and so avoid reading a state primitive while the component is set up.
+   *
+   * @protected
+   */
+  useRef?: <T>(initial: () => T) => { current: T };
+
+  /**
    * A function to be invoked in the event of an invalid state transition.
    */
   onInvalidTransition?: (error: FinityError.InvalidTransitionError) => void;

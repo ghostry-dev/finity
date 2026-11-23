@@ -1,10 +1,24 @@
+import { FinityError } from "@ghostry/finity-core";
 import type {
+  Getter,
   TransitionalStates,
   UsingStrictlyTransitionalState,
 } from "@ghostry/finity-solidjs";
 import { render, renderHook } from "@solidjs/testing-library";
-import { onMount } from "solid-js";
-import { describe, expect, initialize, it, test, vi } from "./index.ts";
+import { untrack } from "solid-js";
+import {
+  describe,
+  expect,
+  initialize,
+  isSolid2,
+  it,
+  onMounted,
+  resume,
+  settle,
+  spyOn,
+  test,
+  vi,
+} from "./index.ts";
 
 const finity = initialize({});
 
@@ -16,7 +30,7 @@ const State = finity
   }>("MyState")
   .transitions({ Loading: ["Ready", "Errored"], Ready: [], Errored: [] });
 
-test("rendering based on the state", async () => {
+test("rendering based on the state", () => {
   const { result: state } = renderHook(finity.useTransitionalState, {
     initialProps: [State, () => ({ kind: "Loading" }) as const],
   });
@@ -24,14 +38,14 @@ test("rendering based on the state", async () => {
   const { asFragment } = render(() =>
     finity
       .useRender(state.value)
-      .case(["Loading", "Ready", "Errored"], (s) => s.kind)
+      .case(["Loading", "Ready", "Errored"], (s) => <p>{s.kind}</p>)
       .use(),
   );
 
-  expect(asFragment()).toBe("Loading");
+  expect(asFragment()).toBe("<p>Loading</p>");
 });
 
-test("providing the properties of the state to a case", async () => {
+test("providing the properties of the state to a case", () => {
   const { result: state } = renderHook(finity.useTransitionalState, {
     initialProps: [State, () => ({ kind: "Ready", resource: 1 }) as const],
   });
@@ -43,8 +57,11 @@ test("providing the properties of the state to a case", async () => {
       .useRender(state.value)
       .case(["Loading", "Errored"], () => null)
       .case(["Ready"], (s) => {
-        const { transition, ...rest } = s;
-        seen = { rest, keys: Object.keys(s), has: "resource" in s };
+        // Read once, on purpose, to see the state's shape.
+        seen = untrack(() => {
+          const { transition, ...rest } = s;
+          return { rest, keys: Object.keys(s), has: "resource" in s };
+        });
         return null;
       })
       .use(),
@@ -57,7 +74,60 @@ test("providing the properties of the state to a case", async () => {
   });
 });
 
-test("rendering a function returned by a case", async () => {
+test("a read at the top of a case is reported in development", () => {
+  const warn = spyOn(console, "warn").mockImplementation(() => {});
+
+  const { result: state } = renderHook(finity.useTransitionalState, {
+    initialProps: [State, () => ({ kind: "Loading" }) as const],
+  });
+
+  const { asFragment } = render(() =>
+    finity
+      .useRender(state.value)
+      .case(["Loading", "Ready", "Errored"], (s) => s.kind)
+      .use(),
+  );
+
+  expect(asFragment()).toBe("Loading");
+
+  // Solid 1 has no such report.
+  if (isSolid2) {
+    expect(warn).toHaveBeenCalledWith(
+      expect.stringContaining("a finity useRender case"),
+    );
+  }
+  warn.mockRestore();
+});
+
+test("rendering a state that no case handles", async () => {
+  /** A cast is the only way past the switch's types to an unhandled kind. */
+  const state = (() => ({ kind: "Paused" })) as unknown as Getter<
+    { kind: "Loading" } | { kind: "Ready" }
+  >;
+
+  /**
+   * Solid 2 reports the error that halts it, which is expected here, and adds
+   * guidance on a microtask, so the console is restored after one.
+   */
+  const error = spyOn(console, "error").mockImplementation(() => {});
+  const warn = spyOn(console, "warn").mockImplementation(() => {});
+
+  expect(() =>
+    render(() =>
+      finity
+        .useRender(state)
+        .case(["Loading", "Ready"], () => null)
+        .use(),
+    ),
+  ).toThrow(FinityError.UnhandledStateError);
+
+  resume();
+  await new Promise<void>(queueMicrotask);
+  error.mockRestore();
+  warn.mockRestore();
+});
+
+test("rendering a function returned by a case", () => {
   const State = finity
     .defineTransitionalState<{ A: { n: number }; B: { n: number } }>("ab")
     .transitions({ A: ["A", "B"], B: [] });
@@ -84,6 +154,7 @@ test("rendering a function returned by a case", async () => {
   expect(s1.kind).toEqual("A");
   if (s1.kind !== "A") return;
   s1.transition({ kind: "A", n: 2 });
+  settle();
 
   expect(container.textContent).toBe("A:2");
 
@@ -91,6 +162,7 @@ test("rendering a function returned by a case", async () => {
   expect(s2.kind).toEqual("A");
   if (s2.kind !== "A") return;
   s2.transition({ kind: "B", n: 2 });
+  settle();
 
   expect(container.textContent).toBe("B:2");
   expect(calls).toBe(1);
@@ -117,7 +189,7 @@ describe("rendering a case", () => {
     let state!: UsingStrictlyTransitionalState<typeof State>;
 
     function Loading(props: { state: States["Loading"] }) {
-      onMount(() => {
+      onMounted(() => {
         mounts.Loading++;
         seen.Loading = props.state;
       });
@@ -129,7 +201,7 @@ describe("rendering a case", () => {
     }
 
     function Viewing(props: { state: States["Viewing"] | States["Deleting"] }) {
-      onMount(() => mounts.Viewing++);
+      onMounted(() => mounts.Viewing++);
       return (
         <p>
           {props.state.kind}:{props.state.data}
@@ -150,8 +222,10 @@ describe("rendering a case", () => {
         .use();
     });
 
-    const transition = (to: object): void =>
+    const transition = (to: object): void => {
       (state.value().transition as (to: object) => void)(to);
+      settle();
+    };
 
     return { container, mounts, seen, transition, state: () => state.value() };
   };
@@ -212,6 +286,7 @@ describe("rendering a case", () => {
     expect(() =>
       loading.transition({ kind: "Viewing", id: "x", data: 2 }),
     ).not.toThrow();
+    settle();
 
     const { transition: _, ...s } = state();
     expect(s).toEqual({ kind: "Viewing", id: "x", data: 1 });

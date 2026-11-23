@@ -1,0 +1,11 @@
+/**
+ * Checks the emitted declarations against Solid 1's types, as
+ * `tsconfig.verify.json` does against Solid 2's, since the published types
+ * have to compile against either.
+ */
+{
+  "extends": "./tsconfig.verify.json",
+  "compilerOptions": {
+    "paths": { "solid-js": ["./node_modules/solid-js-1/types/index.d.ts"] }
+  }
+}

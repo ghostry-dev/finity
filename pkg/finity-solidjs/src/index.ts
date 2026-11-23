@@ -1,5 +1,5 @@
 import * as Core from "@ghostry/finity-core";
-import { createSignal } from "solid-js";
+import { ref, signal } from "./Solid.ts";
 import type { Config } from "./Types.ts";
 import $useEffect from "./useEffect.ts";
 import $useRender from "./useRender.ts";
@@ -32,10 +32,7 @@ export interface Initialized extends Core.Initialized {
  * the provided configuration.
  */
 export const initialize = (config: Config): Initialized => {
-  const api = Core.initialize({
-    ...config,
-    useState: <T extends {}>(initial: () => T) => createSignal(initial()),
-  });
+  const api = Core.initialize({ ...config, useState: signal, useRef: ref });
 
   const useEffect = $useEffect(config);
   const useRender = $useRender(config);

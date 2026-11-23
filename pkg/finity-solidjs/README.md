@@ -58,7 +58,7 @@ export function View() {
 }
 ```
 
-`useRender` renders through Solid's `Switch` and `Match`, and a transition from `Uploading` to `Uploading` updates `progress` in place without re-running the case. See the [Solid guide](https://docs.ghostry.dev/finity/frameworks/solid) for how finity maps onto signals and effects.
+A transition from `Uploading` to `Uploading` updates `progress` in place without re-running the case. The same code runs on Solid 1 and Solid 2. See the [Solid guide](https://docs.ghostry.dev/finity/frameworks/solid) for how finity maps onto signals and effects.
 
 ## States, not flags
 

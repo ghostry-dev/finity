@@ -1,14 +1,6 @@
 import { FinityError } from "@ghostry/finity-core";
 import { renderHook } from "@solidjs/testing-library";
-import { createSignal } from "solid-js";
-import {
-  describe,
-  expect,
-  initialize,
-  it,
-  test,
-  testEffectInStages,
-} from "./index.ts";
+import { describe, expect, initialize, it, settle, test } from "./index.ts";
 
 const finity = initialize({});
 
@@ -20,53 +12,44 @@ const State = finity
   }>("MyState")
   .transitions({ Loading: ["Ready", "Errored"], Ready: [], Errored: [] });
 
-test("transitioning the state", async () => {
+test("transitioning the state", () => {
   const { result: state } = renderHook(finity.useStrictlyTransitionalState, {
     initialProps: [State, () => ({ kind: "Loading" }) as const],
   });
 
-  await testEffectInStages((done) => [
-    () => {
-      const s = state.value();
-      expect(s.kind).toEqual("Loading");
+  const s1 = state.value();
+  expect(s1.kind).toEqual("Loading");
+  if (s1.kind !== "Loading") return;
 
-      if (s.kind !== "Loading") return;
-      s.transition({ kind: "Ready", resource: 123 });
-    },
-    () => {
-      const { transition, ...s } = state.value();
-      expect(s).toEqual({ kind: "Ready", resource: 123 });
-      done();
-    },
-  ]);
+  s1.transition({ kind: "Ready", resource: 123 });
+  settle();
+
+  const { transition, ...s2 } = state.value();
+  expect(s2).toEqual({ kind: "Ready", resource: 123 });
 });
 
 describe("transitioning to a disallowed state", () => {
-  it("does not transition", async () => {
+  it("does not transition", () => {
     const { result: state } = renderHook(finity.useStrictlyTransitionalState, {
       initialProps: [State, () => ({ kind: "Ready", resource: 1 }) as const],
     });
 
-    await testEffectInStages((done) => [
-      () => {
-        const s1 = state.value();
-        expect(s1.kind).toEqual("Ready");
+    const s1 = state.value();
+    expect(s1.kind).toEqual("Ready");
+    if (s1.kind !== "Ready") return;
 
-        if (s1.kind !== "Ready") return;
-        s1.transition(
-          /* @ts-expect-error */
-          { kind: "Errored", error: new Error("e") },
-        );
+    s1.transition(
+      /* @ts-expect-error */
+      { kind: "Errored", error: new Error("e") },
+    );
+    settle();
 
-        const { transition, ...s } = state.value();
-        expect(s).toEqual({ kind: "Ready", resource: 1 });
-        done();
-      },
-    ]);
+    const { transition, ...s } = state.value();
+    expect(s).toEqual({ kind: "Ready", resource: 1 });
   });
 
   describe("with `onInvalidTransition` configured", () => {
-    it("receives the transition context", async () => {
+    it("receives the transition context", () => {
       let $error: FinityError.InvalidTransitionError | undefined;
 
       const finity = initialize({
@@ -84,40 +67,21 @@ describe("transitioning to a disallowed state", () => {
         { initialProps: [State, () => ({ kind: "B" }) as const] },
       );
 
-      const [current, trigger] = createSignal(0);
+      state.value().transition(
+        /* @ts-expect-error */
+        { kind: "A" },
+      );
 
-      await testEffectInStages((done) => [
-        () => {
-          state.value().transition(
-            /* @ts-expect-error */
-            { kind: "A" },
-          );
-
-          /**
-           * Since the transition above isn't expected to change the state, the
-           * test times out since the next effect state is never be triggered.
-           * To trigger the next effect stage, a dummy signal is read and
-           * written here.
-           */
-          trigger(current() + 1);
-        },
-        () => {
-          expect($error).toBeInstanceOf(FinityError.InvalidTransitionError);
-          expect($error?.name).toBe(
-            "@ghostry/finity-core:InvalidTransitionError",
-          );
-          expect($error?.reason).toBe("disallowed");
-          expect($error?.state.name).toStrictEqual("ab");
-          expect($error?.state.from).toMatchObject({ kind: "B" });
-          expect($error?.state.to).toMatchObject({ kind: "A" });
-          expect($error?.tick.current).toBe(0);
-          expect($error?.tick.bound).toBe(0);
-          expect($error?.message).toBeTypeOf("string");
-          expect($error?.stack).toBeTypeOf("string");
-
-          done();
-        },
-      ]);
+      expect($error).toBeInstanceOf(FinityError.InvalidTransitionError);
+      expect($error?.name).toBe("@ghostry/finity-core:InvalidTransitionError");
+      expect($error?.reason).toBe("disallowed");
+      expect($error?.state.name).toStrictEqual("ab");
+      expect($error?.state.from).toMatchObject({ kind: "B" });
+      expect($error?.state.to).toMatchObject({ kind: "A" });
+      expect($error?.tick.current).toBe(0);
+      expect($error?.tick.bound).toBe(0);
+      expect($error?.message).toBeTypeOf("string");
+      expect($error?.stack).toBeTypeOf("string");
     });
   });
 });
@@ -128,28 +92,22 @@ describe("transitioning after state already updated", () => {
     .transitions({ A: ["B", "C"], B: ["C"], C: [] });
 
   describe("using the same transition function", () => {
-    it("does not transition", async () => {
+    it("does not transition", () => {
       const { result: state } = renderHook(
         finity.useStrictlyTransitionalState,
         { initialProps: [State, () => ({ kind: "A" }) as const] },
       );
 
-      await testEffectInStages((done) => [
-        () => {
-          const s1 = state.value();
-          expect(s1.kind).toEqual("A");
-          if (s1.kind !== "A") return;
+      const s1 = state.value();
+      expect(s1.kind).toEqual("A");
+      if (s1.kind !== "A") return;
 
-          s1.transition({ kind: "B" });
+      s1.transition({ kind: "B" });
+      s1.transition({ kind: "C" });
+      settle();
 
-          s1.transition({ kind: "C" });
-        },
-        () => {
-          const { transition, ...s } = state.value();
-          expect(s).toEqual({ kind: "B" });
-          done();
-        },
-      ]);
+      const { transition, ...s } = state.value();
+      expect(s).toEqual({ kind: "B" });
     });
   });
 });
